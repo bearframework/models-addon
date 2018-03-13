@@ -108,7 +108,7 @@ class BearFrameworkAddonTestCase extends PHPUnit_Framework_TestCase
 // * @property string|null $id
 // * @property string|null $name
 // */
-//class User extends \BearFramework\App\Model
+//class User extends \BearFramework\Models\Model
 //{
 //
 //    function __construct()
@@ -125,7 +125,7 @@ class BearFrameworkAddonTestCase extends PHPUnit_Framework_TestCase
 // * @method User make()
 // * @method User[]|BearFramework\App\ModelsList getList()
 // */
-//class UsersRepository extends \BearFramework\App\ModelsRepository
+//class UsersRepository extends \BearFramework\Models\ModelsRepository
 //{
 //
 //    function __construct()

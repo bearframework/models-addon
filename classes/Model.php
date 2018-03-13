@@ -7,7 +7,7 @@
  * Free to use under the MIT license.
  */
 
-namespace BearFramework\App;
+namespace BearFramework\Models;
 
 /**
  *
@@ -17,10 +17,13 @@ class Model
 
     use \IvoPetkov\DataObjectTrait;
     use \IvoPetkov\DataObjectToArrayTrait;
+    use \IvoPetkov\DataObjectToJSONTrait;
+    use \IvoPetkov\DataObjectFromArrayTrait;
+    use \IvoPetkov\DataObjectFromJSONTrait;
 
     function __construct()
     {
-        $this->defineProperty('id', [
+        $this->defineProperty('key', [
             'type' => '?string'
         ]);
     }
