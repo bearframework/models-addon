@@ -15,7 +15,16 @@ namespace BearFramework\Models;
 class ModelsRepository
 {
 
+    /**
+     *
+     * @var array 
+     */
     private $data = [];
+
+    /**
+     *
+     * @var array 
+     */
     private $internalData = [];
 
     /**
@@ -56,10 +65,10 @@ class ModelsRepository
      * 
      * @param type $name
      */
-    protected function setDataStorage($name)
-    {
-        
-    }
+//    protected function setDataStorage($name)
+//    {
+//        
+//    }
 
     /**
      * 
@@ -75,7 +84,7 @@ class ModelsRepository
         if ($model->key === null || !isset($model->key[0])) {
             $model->key = md5(uniqid('', true) . '-' . random_bytes(20)) . rand(10000000, 99999999);
         }
-        $this->data[] = $model;
+        $this->data[$model->key] = $model;
     }
 
     /**
@@ -83,10 +92,9 @@ class ModelsRepository
      * @param string $key
      * @return \BearFramework\Models\Model
      */
-    public function get(string $key): \BearFramework\Models\Model//?
+    public function get(string $key): ?\BearFramework\Models\Model
     {
-        $list = $this->getList()->filterBy('key', $key);
-        return isset($list[0]) ? $list[0] : null;
+        return isset($this->data[$key]) ? $this->data[$key] : null;
     }
 
     /**
@@ -95,7 +103,7 @@ class ModelsRepository
      */
     public function exists(string $key)
     {
-        
+        return isset($this->data[$key]);
     }
 
     /**
@@ -104,7 +112,9 @@ class ModelsRepository
      */
     public function delete(string $key)
     {
-        
+        if (isset($this->data[$key])) {
+            unset($this->data[$key]);
+        }
     }
 
     /**
@@ -163,7 +173,7 @@ class ModelsRepository
     /**
      * 
      * @param array $data
-     * @return \BearFramework\Models\Model
+     * @return \BearFramework\Models\ModelsRepository
      */
     static function fromArray(array $data)
     {
@@ -189,7 +199,7 @@ class ModelsRepository
     /**
      * 
      * @param string $data
-     * @return \BearFramework\Models\Model
+     * @return \BearFramework\Models\ModelsRepository
      */
     static function fromJSON(string $data)
     {
