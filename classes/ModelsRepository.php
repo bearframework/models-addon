@@ -82,7 +82,7 @@ class ModelsRepository
             throw new \Exception('');
         }
         if ($model->key === null || !isset($model->key[0])) {
-            $model->key = md5(uniqid('', true) . '-' . random_bytes(20)) . rand(10000000, 99999999);
+            $model->key = md5(uniqid('', true) . '-' . random_bytes(20)) . base_convert(rand(1, 99999999), 10, 16);
         }
         $this->data[$model->key] = $model;
     }
