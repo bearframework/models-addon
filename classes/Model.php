@@ -29,7 +29,7 @@ class Model
         $this->defineProperty('key', [
             'type' => '?string',
             'set' => function($value) {
-                if (preg_match("/^[a-z0-9]{1}[a-z0-9\.\-\_]*[a-z0-9]{1}$/", $value) === 1) {
+                if ($value === null || preg_match("/^[a-z0-9]{1}[a-z0-9\.\-\_]*[a-z0-9]{1}$/", $value) === 1) {
                     return $value;
                 } else {
                     throw new \Exception('');
