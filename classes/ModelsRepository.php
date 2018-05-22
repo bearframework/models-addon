@@ -150,12 +150,22 @@ class ModelsRepository
 
     /**
      * 
-     * @param string $json
+     * @param string $data
      * @return \BearFramework\Models\Model
      */
-    private function makeFromJSON(string $json): \BearFramework\Models\Model
+    public function makeFromJSON(string $data): \BearFramework\Models\Model
     {
-        return call_user_func([$this->getModelClassName(), 'fromJSON'], $json);
+        return call_user_func([$this->getModelClassName(), 'fromJSON'], $data);
+    }
+
+    /**
+     * 
+     * @param array $data
+     * @return \BearFramework\Models\Model
+     */
+    public function makeFromArray(array $data): \BearFramework\Models\Model
+    {
+        return call_user_func([$this->getModelClassName(), 'fromArray'], $data);
     }
 
     /**

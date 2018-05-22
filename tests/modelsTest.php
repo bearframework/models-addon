@@ -80,7 +80,7 @@ class ModelsTest extends BearFrameworkAddonTestCase
         }
     }
 
-    public function testSerialization()
+    public function testSerialization1()
     {
         $app = $this->getApp();
 
@@ -118,10 +118,44 @@ class ModelsTest extends BearFrameworkAddonTestCase
             $repository2 = SampleRepository1::fromJSON($expectedJSON);
             $this->assertTrue($repository2->toArray() === $expectedArray, $assertMessage);
             $this->assertTrue($repository2->toJSON() === $expectedJSON, $assertMessage);
-            
+
             $repository3 = SampleRepository1::fromArray($expectedArray);
             $this->assertTrue($repository3->toArray() === $expectedArray, $assertMessage);
             $this->assertTrue($repository3->toJSON() === $expectedJSON, $assertMessage);
+        }
+    }
+
+    public function testSerialization2()
+    {
+        $app = $this->getApp();
+
+        $dataDrivers = ['memory', 'data'];
+        foreach ($dataDrivers as $dataDriver) {
+            $assertMessage = 'Data driver: ' . $dataDriver;
+
+            $repository = new SampleRepository1($dataDriver);
+
+            $model = $repository->make();
+            $model->key = 'key1';
+            $model->name = 'John';
+
+            $expectedArray = [
+                'key' => 'key1',
+                'name' => 'John'
+            ];
+            $expectedJSON = '{"key":"key1","name":"John"}';
+            $this->assertTrue($model->toArray() === $expectedArray, $assertMessage);
+            $this->assertTrue($model->toJSON() === $expectedJSON, $assertMessage);
+
+            $model1 = $repository->makeFromJSON($expectedJSON);
+            $this->assertTrue($model1 instanceof SampleModel1, $assertMessage);
+            $this->assertTrue($model1->key === 'key1', $assertMessage);
+            $this->assertTrue($model1->name === 'John', $assertMessage);
+
+            $model2 = $repository->makeFromArray($expectedArray);
+            $this->assertTrue($model1 instanceof SampleModel1, $assertMessage);
+            $this->assertTrue($model1->key === 'key1', $assertMessage);
+            $this->assertTrue($model1->name === 'John', $assertMessage);
         }
     }
 
