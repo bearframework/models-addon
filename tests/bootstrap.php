@@ -8,6 +8,7 @@
  */
 
 require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/SampleClasses.php';
 
 /**
  * 
@@ -23,7 +24,7 @@ class BearFrameworkAddonTestCase extends PHPUnit_Framework_TestCase
 
     function getTestDir()
     {
-        return sys_get_temp_dir() . '/ivopetkovpushnotifications/' . uniqid() . '/';
+        return sys_get_temp_dir() . '/bearframework-models/' . uniqid() . '/';
     }
 
     /**

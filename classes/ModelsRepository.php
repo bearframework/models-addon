@@ -10,119 +10,209 @@
 namespace BearFramework\Models;
 
 /**
- *
+ * @property-read string $contextID
  */
 class ModelsRepository
 {
 
-    /**
-     *
-     * @var array 
-     */
-    private $data = [];
+    use \IvoPetkov\DataObjectTrait;
 
     /**
      *
-     * @var array 
+     * @var ?\BearFramework\Models\IDataDriver 
      */
-    private $internalData = [];
+    private $dataDriver = null;
+
+    /**
+     *
+     * @var ?string 
+     */
+    private $modelClassName = null;
+
+    /**
+     *
+     * @var ?\BearFramework\Models\Model 
+     */
+    private $modelObjectCache = null;
+
+    /**
+     *
+     * @var string
+     */
+    private $contextID = '/';
 
     /**
      * 
-     * @return \BearFramework\Models\modelClassName
      */
-    public function make()
+    function __construct()
     {
-        $modelClassName = $this->getModelClassName();
-        return new $modelClassName();
+        $this->defineProperty('contextID', [
+            'type' => '?string',
+            'readonly' => true,
+            'get' => function() {
+                return $this->contextID;
+            }
+        ]);
     }
 
     /**
      * 
      * @param string $name
      */
-    protected function setModel(string $name)
+    protected function setModel(string $name): void
     {
-        $this->internalData[0] = $name;
+        $this->modelClassName = $name;
     }
 
     /**
      * 
-     * @return type
+     * @param \BearFramework\Models\IDataDriver $driver
+     */
+    protected function setDataDriver(\BearFramework\Models\IDataDriver $driver): void
+    {
+        $this->dataDriver = $driver;
+    }
+
+    /**
+     * 
+     * @param string $dataKeyPrefix
+     */
+    protected function useAppDataDriver(string $dataKeyPrefix): void
+    {
+        $this->setDataDriver(new \BearFramework\Models\AppDataDriver($dataKeyPrefix));
+    }
+
+    /**
+     * 
+     */
+    protected function useMemoryDataDriver(): void
+    {
+        $this->setDataDriver(new \BearFramework\Models\MemoryDataDriver());
+    }
+
+    /**
+     * 
+     * @return string
      * @throws \Exception
      */
-    private function getModelClassName()
+    private function getModelClassName(): string
     {
-        $className = isset($this->internalData[0]) ? $this->internalData[0] : null;
-        if ($className !== null && class_exists($className)) {
-            return $className;
+        if ($this->modelClassName !== null && class_exists($this->modelClassName)) {
+            return $this->modelClassName;
         } else {
-            throw new \Exception('Cannot find class named ' . $className . '!');
+            throw new \Exception('Cannot find class named ' . $this->modelClassName . '!');
         }
     }
 
     /**
      * 
-     * @param type $name
+     * @param string $name
+     * @return \BearFramework\Models\ModelsRepository
+     * @throws \InvalidArgumentException
      */
-//    protected function setDataStorage($name)
-//    {
-//        
-//    }
+    public function makeContext(string $name): \BearFramework\Models\ModelsRepository
+    {
+        $validateName = function($name) {
+            return $name !== '-' && preg_match("/^[a-z0-9\.\-\_]*$/", $name) === 1;
+        };
+        $currentContextID = $this->contextID;
+        if ($name[0] === '/') {
+            $parts = explode('/', $name);
+            foreach ($parts as $part) {
+                if (!$validateName($part)) {
+                    throw new \InvalidArgumentException('');
+                }
+            }
+            $this->contextID = implode('/', $parts);
+        } else {
+            if (!$validateName($name)) {
+                throw new \InvalidArgumentException('');
+            }
+            $this->contextID = $currentContextID . $name . '/';
+        }
+        $clone = clone($this);
+        $this->contextID = $currentContextID;
+        return $clone;
+    }
+
+    /**
+     * 
+     * @return \BearFramework\Models\Model
+     */
+    public function make(): \BearFramework\Models\Model
+    {
+        if ($this->modelObjectCache === null) {
+            $modelClassName = $this->getModelClassName();
+            $this->modelObjectCache = new $modelClassName();
+        }
+        return clone($this->modelObjectCache);
+    }
+
+    /**
+     * 
+     * @param string $json
+     * @return \BearFramework\Models\Model
+     */
+    private function makeFromJSON(string $json): \BearFramework\Models\Model
+    {
+        return call_user_func([$this->getModelClassName(), 'fromJSON'], $json);
+    }
 
     /**
      * 
      * @param \BearFramework\Models\Model $model
-     * @throws \Exception
+     * @throws \InvalidArgumentException
      */
-    public function set(\BearFramework\Models\Model $model)
+    public function set(\BearFramework\Models\Model $model): void
     {
         $modelClassName = $this->getModelClassName();
         if (!is_a($model, $modelClassName)) {
-            throw new \Exception('');
+            throw new \InvalidArgumentException('');
         }
         if ($model->key === null || !isset($model->key[0])) {
-            $model->key = md5(uniqid('', true) . '-' . random_bytes(20)) . base_convert(rand(1, 99999999), 10, 16);
+            $model->key = base_convert(md5(uniqid('', true) . '-' . random_bytes(20)), 16, 35) . 'z1' . base_convert(md5(uniqid('', true) . '-' . random_bytes(20)), 16, 35);
         }
-        $this->data[$model->key] = $model;
+        $this->dataDriver->set($this->contextID, $model->key, $model->toJSON());
     }
 
     /**
      * 
      * @param string $key
-     * @return \BearFramework\Models\Model
+     * @return ?\BearFramework\Models\Model
      */
     public function get(string $key): ?\BearFramework\Models\Model
     {
-        return isset($this->data[$key]) ? $this->data[$key] : null;
-    }
-
-    /**
-     * 
-     * @param string $key
-     */
-    public function exists(string $key)
-    {
-        return isset($this->data[$key]);
-    }
-
-    /**
-     * 
-     * @param string $key
-     */
-    public function delete(string $key)
-    {
-        if (isset($this->data[$key])) {
-            unset($this->data[$key]);
+        $json = $this->dataDriver->get($this->contextID, $key);
+        if ($json === null) {
+            return null;
         }
+        return $this->makeFromJSON($json);
+    }
+
+    /**
+     * 
+     * @param string $key
+     */
+    public function exists(string $key): bool
+    {
+        return $this->dataDriver->exists($this->contextID, $key);
+    }
+
+    /**
+     * 
+     * @param string $key
+     */
+    public function delete(string $key): void
+    {
+        $this->dataDriver->delete($this->contextID, $key);
     }
 
     /**
      * 
      */
-    public function deleteAll()
+    public function deleteAll(): void
     {
-        $this->data = [];
+        $this->dataDriver->deleteAll($this->contextID);
     }
 
     /**
@@ -133,8 +223,11 @@ class ModelsRepository
     {
         return new \BearFramework\Models\ModelsList(function () {
             $result = [];
-            foreach ($this->data as $object) {
-                $result[] = clone($object);
+            $keys = $this->dataDriver->getKeys($this->contextID);
+            foreach ($keys as $key) {
+                $result[] = function() use ($key) {
+                    return $this->get($key);
+                };
             }
             return $result;
         });
