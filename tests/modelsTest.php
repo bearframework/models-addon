@@ -159,4 +159,44 @@ class ModelsTest extends BearFrameworkAddonTestCase
         }
     }
 
+    /**
+     * 
+     */
+    public function testNoModelSpecified()
+    {
+        $app = $this->getApp();
+
+        $repository = new class extends \BearFramework\Models\ModelsRepository {
+
+            public function __construct()
+            {
+                $this->useMemoryDataDriver();
+            }
+        };
+
+        $this->expectException(\Exception::class);
+        $repository->make();
+    }
+
+    /**
+     * 
+     */
+    public function testNoDataDrivierSpecified()
+    {
+        $app = $this->getApp();
+
+        $repository = new class extends \BearFramework\Models\ModelsRepository {
+
+            public function __construct()
+            {
+                $this->setModel(SampleModel1::class);
+            }
+        };
+
+        $model = $repository->make();
+        $model->name = 'John';
+        $this->expectException(\Exception::class);
+        $repository->set($model);
+    }
+
 }

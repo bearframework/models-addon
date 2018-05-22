@@ -97,11 +97,21 @@ class ModelsRepository
      */
     private function getModelClassName(): string
     {
-        if ($this->modelClassName !== null && class_exists($this->modelClassName)) {
-            return $this->modelClassName;
-        } else {
+        if ($this->modelClassName !== null) {
+            if (class_exists($this->modelClassName)) {
+                return $this->modelClassName;
+            }
             throw new \Exception('Cannot find class named ' . $this->modelClassName . '!');
         }
+        throw new \Exception('No model specified! Use setModel() in the repository constructor to specify one.');
+    }
+
+    private function getDataDriver(): \BearFramework\Models\IDataDriver
+    {
+        if ($this->dataDriver !== null) {
+            return $this->dataDriver;
+        }
+        throw new \Exception('No data driver specified! Use useAppDataDriver() or useMemoryDataDriver() in the repository constructor to specify one.');
     }
 
     /**
@@ -182,7 +192,7 @@ class ModelsRepository
         if ($model->key === null || !isset($model->key[0])) {
             $model->key = base_convert(md5(uniqid('', true) . '-' . random_bytes(20)), 16, 35) . 'z1' . base_convert(md5(uniqid('', true) . '-' . random_bytes(20)), 16, 35);
         }
-        $this->dataDriver->set($this->contextID, $model->key, $model->toJSON());
+        $this->getDataDriver()->set($this->contextID, $model->key, $model->toJSON());
     }
 
     /**
@@ -192,7 +202,7 @@ class ModelsRepository
      */
     public function get(string $key): ?\BearFramework\Models\Model
     {
-        $json = $this->dataDriver->get($this->contextID, $key);
+        $json = $this->getDataDriver()->get($this->contextID, $key);
         if ($json === null) {
             return null;
         }
@@ -205,7 +215,7 @@ class ModelsRepository
      */
     public function exists(string $key): bool
     {
-        return $this->dataDriver->exists($this->contextID, $key);
+        return $this->getDataDriver()->exists($this->contextID, $key);
     }
 
     /**
@@ -214,7 +224,7 @@ class ModelsRepository
      */
     public function delete(string $key): void
     {
-        $this->dataDriver->delete($this->contextID, $key);
+        $this->getDataDriver()->delete($this->contextID, $key);
     }
 
     /**
@@ -222,7 +232,7 @@ class ModelsRepository
      */
     public function deleteAll(): void
     {
-        $this->dataDriver->deleteAll($this->contextID);
+        $this->getDataDriver()->deleteAll($this->contextID);
     }
 
     /**
@@ -233,7 +243,7 @@ class ModelsRepository
     {
         return new \BearFramework\Models\ModelsList(function () {
             $result = [];
-            $keys = $this->dataDriver->getKeys($this->contextID);
+            $keys = $this->getDataDriver()->getKeys($this->contextID);
             foreach ($keys as $key) {
                 $result[] = function() use ($key) {
                     return $this->get($key);
