@@ -3,7 +3,7 @@
 /*
  * Bear Framework Models
  * https://github.com/bearframework/models-addon
- * Copyright (c) 2018 Ivo Petkov
+ * Copyright (c) Ivo Petkov
  * Free to use under the MIT license.
  */
 
