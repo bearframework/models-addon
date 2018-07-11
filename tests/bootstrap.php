@@ -8,7 +8,6 @@
  */
 
 require __DIR__ . '/../vendor/autoload.php';
-require __DIR__ . '/SampleClasses.php';
 
 /**
  * 
@@ -60,6 +59,8 @@ class BearFrameworkAddonTestCase extends PHPUnit_Framework_TestCase
             $this->app->request->method = 'GET';
 
             $this->app->addons->add('bearframework/models-addon');
+
+            require_once __DIR__ . '/SampleClasses.php';
         }
 
         return $this->app;
