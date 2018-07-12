@@ -279,9 +279,8 @@ class ModelsRepository
      */
     public function __fromArray(array $data): void
     {
-        $modelClassName = $this->getModelClassName();
         foreach ($data as $item) {
-            $this->set(call_user_func([$modelClassName, 'fromArray'], $item));
+            $this->set($this->makeFromArray($item));
         }
     }
 
@@ -292,9 +291,8 @@ class ModelsRepository
     public function __fromJSON(string $data): void
     {
         $data = json_decode($data, true);
-        $modelClassName = $this->getModelClassName();
         foreach ($data as $item) {
-            $this->set(call_user_func([$modelClassName, 'fromJSON'], json_encode($item)));
+            $this->set($this->makeFromJSON(json_encode($item)));
         }
     }
 
