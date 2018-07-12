@@ -10,7 +10,7 @@
 /**
  * @runTestsInSeparateProcesses
  */
-class ModelsTest extends BearFrameworkAddonTestCase
+class ModelsTest extends BearFramework\AddonTests\PHPUnitTestCase
 {
 
     /**
@@ -18,8 +18,6 @@ class ModelsTest extends BearFrameworkAddonTestCase
      */
     public function testBasics()
     {
-        $app = $this->getApp();
-
         $dataDrivers = ['memory', 'data'];
         foreach ($dataDrivers as $dataDriver) {
             $assertMessage = 'Data driver: ' . $dataDriver;
@@ -40,10 +38,11 @@ class ModelsTest extends BearFrameworkAddonTestCase
         }
     }
 
+    /**
+     * 
+     */
     public function testContexts()
     {
-        $app = $this->getApp();
-
         $dataDrivers = ['memory', 'data'];
         foreach ($dataDrivers as $dataDriver) {
             $assertMessage = 'Data driver: ' . $dataDriver;
@@ -80,10 +79,11 @@ class ModelsTest extends BearFrameworkAddonTestCase
         }
     }
 
+    /**
+     * 
+     */
     public function testSerialization1()
     {
-        $app = $this->getApp();
-
         $dataDrivers = ['memory', 'data'];
         foreach ($dataDrivers as $dataDriver) {
             $assertMessage = 'Data driver: ' . $dataDriver;
@@ -125,10 +125,11 @@ class ModelsTest extends BearFrameworkAddonTestCase
         }
     }
 
+    /**
+     * 
+     */
     public function testSerialization2()
     {
-        $app = $this->getApp();
-
         $dataDrivers = ['memory', 'data'];
         foreach ($dataDrivers as $dataDriver) {
             $assertMessage = 'Data driver: ' . $dataDriver;
@@ -164,8 +165,6 @@ class ModelsTest extends BearFrameworkAddonTestCase
      */
     public function testNoModelSpecified()
     {
-        $app = $this->getApp();
-
         $repository = new class extends \BearFramework\Models\ModelsRepository {
 
             public function __construct()
@@ -183,8 +182,6 @@ class ModelsTest extends BearFrameworkAddonTestCase
      */
     public function testNoDataDrivierSpecified()
     {
-        $app = $this->getApp();
-
         $repository = new class extends \BearFramework\Models\ModelsRepository {
 
             public function __construct()

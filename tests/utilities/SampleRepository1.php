@@ -7,20 +7,6 @@
  * Free to use under the MIT license.
  */
 
-class SampleModel1 extends \BearFramework\Models\Model
-{
-
-    public function __construct()
-    {
-        parent::__construct();
-        $this
-                ->defineProperty('name', [
-                    'type' => '?string'
-        ]);
-    }
-
-}
-
 class SampleRepository1 extends \BearFramework\Models\ModelsRepository
 {
 
