@@ -12,6 +12,7 @@ class SampleRepository1 extends \BearFramework\Models\ModelsRepository
 
     public function __construct(string $dataDriver = 'memory')
     {
+        parent::__construct();
         $this->setModel(SampleModel1::class);
         if ($dataDriver === 'memory') {
             $this->useMemoryDataDriver();

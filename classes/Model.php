@@ -32,7 +32,7 @@ class Model
                 if ($value === null || preg_match("/^[a-z0-9]{1}[a-z0-9\.\-\_]*[a-z0-9]{1}$/", $value) === 1) {
                     return $value;
                 } else {
-                    throw new \Exception('');
+                    throw new \Exception('The key value is invalid!');
                 }
             }
         ]);

@@ -16,6 +16,8 @@ class ModelsRepository
 {
 
     use \IvoPetkov\DataObjectTrait;
+    use \IvoPetkov\DataObjectFromArrayTrait;
+    use \IvoPetkov\DataObjectFromJSONTrait;
 
     /**
      *
@@ -275,7 +277,7 @@ class ModelsRepository
      * 
      * @param array $data
      */
-    function __fromArray(array $data): void
+    public function __fromArray(array $data): void
     {
         $modelClassName = $this->getModelClassName();
         foreach ($data as $item) {
@@ -285,41 +287,15 @@ class ModelsRepository
 
     /**
      * 
-     * @param array $data
-     * @return \BearFramework\Models\ModelsRepository
-     */
-    static function fromArray(array $data)
-    {
-        $class = get_called_class();
-        $object = new $class();
-        $object->__fromArray($data);
-        return $object;
-    }
-
-    /**
-     * 
      * @param string $data
      */
-    function __fromJSON(string $data): void
+    public function __fromJSON(string $data): void
     {
         $data = json_decode($data, true);
         $modelClassName = $this->getModelClassName();
         foreach ($data as $item) {
             $this->set(call_user_func([$modelClassName, 'fromJSON'], json_encode($item)));
         }
-    }
-
-    /**
-     * 
-     * @param string $data
-     * @return \BearFramework\Models\ModelsRepository
-     */
-    static function fromJSON(string $data)
-    {
-        $class = get_called_class();
-        $object = new $class();
-        $object->__fromJSON($data);
-        return $object;
     }
 
 }
