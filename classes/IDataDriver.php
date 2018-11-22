@@ -11,6 +11,7 @@ namespace BearFramework\Models;
 
 /**
  * A data driver interface.
+ * 
  * @codeCoverageIgnore
  */
 interface IDataDriver
@@ -18,42 +19,42 @@ interface IDataDriver
 
     /**
      * 
-     * @param string $contextID
-     * @param string $key
+     * @param string $id
      * @param string $json
+     * @return void
      */
-    public function set(string $contextID, string $key, string $json): void;
+    public function set(string $id, string $json): void;
 
     /**
      * 
-     * @param string $contextID
-     * @param string $key
+     * @param string $id
+     * @return string|null
      */
-    public function get(string $contextID, string $key): ?string;
+    public function get(string $id): ?string;
 
     /**
      * 
-     * @param string $contextID
-     * @param string $key
+     * @param string $id
+     * @return bool
      */
-    public function exists(string $contextID, string $key): bool;
+    public function exists(string $id): bool;
 
     /**
      * 
-     * @param string $contextID
-     * @param string $key
+     * @param string $id
+     * @return void
      */
-    public function delete(string $contextID, string $key): void;
+    public function delete(string $id): void;
 
     /**
      * 
-     * @param string $contextID
+     * @return void
      */
-    public function deleteAll(string $contextID): void;
+    public function deleteAll(): void;
 
     /**
      * 
-     * @param string $contextID
+     * @return array
      */
-    public function getKeys(string $contextID): array;
+    public function getAll(): array;
 }

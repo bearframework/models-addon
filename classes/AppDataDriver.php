@@ -24,99 +24,92 @@ class AppDataDriver implements \BearFramework\Models\IDataDriver
     private $dataKeyPrefix = null;
 
     /**
+     *
+     * @var \BearFramework\App 
+     */
+    private $app = null;
+
+    /**
      * 
      * @param string $dataKeyPrefix
      * @throws \InvalidArgumentException
      */
-    public function __construct(string $dataKeyPrefix = 'models/')
+    public function __construct(string $dataKeyPrefix)
     {
-        $app = App::get();
-        $this->dataKeyPrefix = trim($dataKeyPrefix, '/');
-        if (strlen($this->dataKeyPrefix) === 0 || !$app->data->isValidKey($this->dataKeyPrefix . '/example')) {
-            throw new \InvalidArgumentException('The dataKeyPrefix provided (' . $dataKeyPrefix . ') is invalid!');
+        $this->app = App::get();
+        if (strlen($dataKeyPrefix) === 0 || !$this->app->data->isValidKey($dataKeyPrefix . 'example')) {
+            throw new \InvalidArgumentException('The dataKeyPrefix provided (' . $dataKeyPrefix . ') is not valid!');
         }
+        $this->dataKeyPrefix = $dataKeyPrefix;
     }
 
     /**
      * 
-     * @param string $contextID
-     * @param string $key
+     * @param string $id
      * @param string $json
+     * @return void
      */
-    public function set(string $contextID, string $key, string $json): void
+    public function set(string $id, string $json): void
     {
-        $app = App::get();
-        $app->data->setValue($this->dataKeyPrefix . $contextID . '-/' . $key, $json);
+        $this->app->data->setValue($this->dataKeyPrefix . md5($id) . '.json', $json);
     }
 
     /**
      * 
-     * @param string $contextID
-     * @param string $key
+     * @param string $id
      * @return string|null
      */
-    public function get(string $contextID, string $key): ?string
+    public function get(string $id): ?string
     {
-        $app = App::get();
-        $value = $app->data->getValue($this->dataKeyPrefix . $contextID . '-/' . $key);
-        if ($value !== null) {
-            return $value;
-        }
-        return null;
+        return $this->app->data->getValue($this->dataKeyPrefix . md5($id) . '.json');
     }
 
     /**
      * 
-     * @param string $contextID
-     * @param string $key
+     * @param string $id
      * @return bool
      */
-    public function exists(string $contextID, string $key): bool
+    public function exists(string $id): bool
     {
-        $app = App::get();
-        return $app->data->exists($this->dataKeyPrefix . $contextID . '-/' . $key);
+        return $this->app->data->exists($this->dataKeyPrefix . md5($id) . '.json');
     }
 
     /**
      * 
-     * @param string $contextID
-     * @param string $key
+     * @param string $id
+     * @return void
      */
-    public function delete(string $contextID, string $key): void
+    public function delete(string $id): void
     {
-        $app = App::get();
-        $app->data->delete($this->dataKeyPrefix . $contextID . '-/' . $key);
+        $this->app->data->delete($this->dataKeyPrefix . md5($id) . '.json');
     }
 
     /**
      * 
-     * @param string $contextID
+     * @return void
      */
-    public function deleteAll(string $contextID): void
+    public function deleteAll(): void
     {
-        $app = App::get();
-        $keys = $this->getKeys($contextID);
-        $dataKeyPrefix = $this->dataKeyPrefix . $contextID . '-/';
-        foreach ($keys as $key) {
-            $app->data->delete($dataKeyPrefix . $key);
+        $list = $this->app->data->getList()
+                ->filterBy('key', $this->dataKeyPrefix, 'startWith')
+                ->sliceProperties(['key']);
+        foreach ($list as $item) {
+            $this->app->data->delete($item->key);
         }
     }
 
     /**
      * 
-     * @param string $contextID
      * @return array
      */
-    public function getKeys(string $contextID): array
+    public function getAll(): array
     {
-        $app = App::get();
         $result = [];
-        $dataKeyPrefix = $this->dataKeyPrefix . $contextID . '-/';
-        $dataKeyPrefixLength = strlen($dataKeyPrefix);
-        $list = $app->data->getList()
-                ->filterBy('key', $dataKeyPrefix, 'startWith');
+        $list = $this->app->data->getList()
+                ->filterBy('key', $this->dataKeyPrefix, 'startWith')
+                ->sliceProperties(['value']);
         foreach ($list as $item) {
-            $result[] = substr($item->key, $dataKeyPrefixLength);
+            $result[] = $item->value;
         }
         return $result;
     }

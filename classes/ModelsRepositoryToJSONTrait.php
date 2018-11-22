@@ -11,10 +11,17 @@ namespace BearFramework\Models;
 
 /**
  * 
- * @codeCoverageIgnore
  */
-class Model
+trait ModelsRepositoryToJSONTrait
 {
 
-    use \BearFramework\Models\ModelTrait;
+    /**
+     * 
+     * @return string
+     */
+    public function toJSON(): string
+    {
+        return $this->internalModelsRepositoryGetList()->toJSON();
+    }
+
 }

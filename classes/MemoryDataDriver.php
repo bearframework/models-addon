@@ -23,71 +23,63 @@ class MemoryDataDriver implements \BearFramework\Models\IDataDriver
 
     /**
      * 
-     * @param string $contextID
-     * @param string $key
+     * @param string $id
      * @param string $json
+     * @return void
      */
-    public function set(string $contextID, string $key, string $json): void
+    public function set(string $id, string $json): void
     {
-        if (!isset($this->data[$contextID])) {
-            $this->data[$contextID] = [];
-        }
-        $this->data[$contextID][$key] = $json;
+        $this->data[$id] = $json;
     }
 
     /**
      * 
-     * @param string $contextID
-     * @param string $key
-     * @return string
+     * @param string $id
+     * @return string|null
      */
-    public function get(string $contextID, string $key): ?string
+    public function get(string $id): ?string
     {
-        return isset($this->data[$contextID], $this->data[$contextID][$key]) ? $this->data[$contextID][$key] : null;
+        return isset($this->data[$id]) ? $this->data[$id] : null;
     }
 
     /**
      * 
-     * @param string $contextID
-     * @param string $key
+     * @param string $id
      * @return bool
      */
-    public function exists(string $contextID, string $key): bool
+    public function exists(string $id): bool
     {
-        return isset($this->data[$contextID], $this->data[$contextID][$key]);
+        return isset($this->data[$id]);
     }
 
     /**
      * 
-     * @param string $contextID
-     * @param string $key
+     * @param string $id
+     * @return void
      */
-    public function delete(string $contextID, string $key): void
+    public function delete(string $id): void
     {
-        if (isset($this->data[$contextID], $this->data[$contextID][$key])) {
-            unset($this->data[$contextID][$key]);
+        if (isset($this->data[$id])) {
+            unset($this->data[$id]);
         }
     }
 
     /**
      * 
-     * @param string $contextID
+     * @return void
      */
-    public function deleteAll(string $contextID): void
+    public function deleteAll(): void
     {
-        if (isset($this->data[$contextID])) {
-            unset($this->data[$contextID]);
-        }
+        $this->data = [];
     }
 
     /**
      * 
-     * @param string $contextID
      * @return array
      */
-    public function getKeys(string $contextID): array
+    public function getAll(): array
     {
-        return isset($this->data[$contextID]) ? array_keys($this->data[$contextID]) : [];
+        return array_values($this->data);
     }
 
 }

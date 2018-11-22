@@ -12,12 +12,11 @@ class SampleRepository1 extends \BearFramework\Models\ModelsRepository
 
     public function __construct(string $dataDriver = 'memory')
     {
-        parent::__construct();
-        $this->setModel(SampleModel1::class);
+        $this->setModel(SampleModel1::class, 'id');
         if ($dataDriver === 'memory') {
             $this->useMemoryDataDriver();
-        } elseif (substr($dataDriver, 0, 4) === 'data') {
-            $this->useAppDataDriver(md5($dataDriver));
+        } elseif ($dataDriver === 'data') {
+            $this->useAppDataDriver('prefix/');
         }
     }
 

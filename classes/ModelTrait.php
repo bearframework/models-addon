@@ -13,8 +13,12 @@ namespace BearFramework\Models;
  * 
  * @codeCoverageIgnore
  */
-class Model
+trait ModelTrait
 {
 
-    use \BearFramework\Models\ModelTrait;
+    use \IvoPetkov\DataObjectTrait;
+    use \IvoPetkov\DataObjectToArrayTrait;
+    use \IvoPetkov\DataObjectToJSONTrait;
+    use \IvoPetkov\DataObjectFromArrayTrait;
+    use \IvoPetkov\DataObjectFromJSONTrait;
 }

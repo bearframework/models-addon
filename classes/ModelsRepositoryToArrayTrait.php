@@ -11,10 +11,17 @@ namespace BearFramework\Models;
 
 /**
  * 
- * @codeCoverageIgnore
  */
-class Model
+trait ModelsRepositoryToArrayTrait
 {
 
-    use \BearFramework\Models\ModelTrait;
+    /**
+     * 
+     * @return array
+     */
+    public function toArray(): array
+    {
+        return $this->internalModelsRepositoryGetList()->toArray();
+    }
+
 }

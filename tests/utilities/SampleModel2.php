@@ -7,13 +7,15 @@
  * Free to use under the MIT license.
  */
 
-namespace BearFramework\Models;
-
 /**
- *
- * @codeCoverageIgnore
+ * 
+ * @property ?string $id
+ * @property ?string $name
  */
-class ModelsList extends \IvoPetkov\DataList
+class SampleModel2 extends \BearFramework\Models\Model
 {
-    
+
+    public $id = null;
+    public $name = null;
+
 }

@@ -23,59 +23,31 @@ class ModelsTest extends BearFramework\AddonTests\PHPUnitTestCase
             $assertMessage = 'Data driver: ' . $dataDriver;
 
             $repository = new SampleRepository1($dataDriver);
+
             $model = $repository->make();
             $model->name = 'John';
             $repository->set($model);
-            $modelKey = $model->key;
+            $modelID = $model->id;
 
             $this->assertTrue($repository->getList()->length === 1, $assertMessage);
-            $this->assertTrue($repository->get($modelKey)->name === 'John', $assertMessage);
-            $this->assertTrue($repository->exists($modelKey) === true, $assertMessage);
-            $repository->delete($modelKey);
+            $this->assertTrue($repository->get($modelID)->name === 'John', $assertMessage);
+            $this->assertTrue($repository->exists($modelID) === true, $assertMessage);
+            $repository->delete($modelID);
             $this->assertTrue($repository->getList()->length === 0, $assertMessage);
-            $this->assertTrue($repository->get($modelKey) === null, $assertMessage);
-            $this->assertTrue($repository->exists($modelKey) === false, $assertMessage);
-        }
-    }
+            $this->assertTrue($repository->get($modelID) === null, $assertMessage);
+            $this->assertTrue($repository->exists($modelID) === false, $assertMessage);
 
-    /**
-     * 
-     */
-    public function testContexts()
-    {
-        $dataDrivers = ['memory', 'data'];
-        foreach ($dataDrivers as $dataDriver) {
-            $assertMessage = 'Data driver: ' . $dataDriver;
-
-            $repository = new SampleRepository1($dataDriver);
-
-            $repository1 = $repository->makeContext('context1');
             $model = $repository->make();
-            $model->key = 'key1';
-            $model->name = 'John';
-            $repository1->set($model);
-
-            $repository2 = $repository->makeContext('context2');
-            $model = $repository->make();
-            $model->key = 'key1';
             $model->name = 'Mark';
-            $repository2->set($model);
+            $repository->set($model);
 
-            $this->assertTrue($repository1->getList()->length === 1, $assertMessage);
-            $this->assertTrue($repository1->get('key1')->name === 'John', $assertMessage);
-            $this->assertTrue($repository1->exists('key1') === true, $assertMessage);
+            $model = $repository->make();
+            $model->name = 'Matt';
+            $repository->set($model);
 
-            $this->assertTrue($repository2->getList()->length === 1, $assertMessage);
-            $this->assertTrue($repository2->get('key1')->name === 'Mark', $assertMessage);
-            $this->assertTrue($repository2->exists('key1') === true, $assertMessage);
-
-            $repository1->deleteAll();
-
-            $this->assertTrue($repository1->getList()->length === 0, $assertMessage);
-            $this->assertTrue($repository1->get('key1') === null, $assertMessage);
-
-            $this->assertTrue($repository2->getList()->length === 1, $assertMessage);
-            $this->assertTrue($repository2->get('key1')->name === 'Mark', $assertMessage);
+            $this->assertTrue($repository->getList()->length === 2, $assertMessage);
+            $repository->deleteAll();
+            $this->assertTrue($repository->getList()->length === 0, $assertMessage);
         }
     }
 
@@ -91,37 +63,54 @@ class ModelsTest extends BearFramework\AddonTests\PHPUnitTestCase
             $repository1 = new SampleRepository1($dataDriver);
 
             $model = $repository1->make();
-            $model->key = 'key1';
+            $model->id = 'id1';
             $model->name = 'John';
             $repository1->set($model);
 
             $model = $repository1->make();
-            $model->key = 'key2';
+            $model->id = 'id2';
             $model->name = 'Mark';
             $repository1->set($model);
 
-            $expectedArray = [
+            $expectedArray1 = [
                 [
-                    'key' => 'key1',
+                    'id' => 'id1',
                     'name' => 'John'
                 ],
                 [
-                    'key' => 'key2',
+                    'id' => 'id2',
                     'name' => 'Mark'
                 ]
             ];
-            $expectedJSON = '[{"key":"key1","name":"John"},{"key":"key2","name":"Mark"}]';
+            $expectedArray2 = [
+                [
+                    'id' => 'id2',
+                    'name' => 'Mark'
+                ],
+                [
+                    'id' => 'id1',
+                    'name' => 'John'
+                ]
+            ];
+            $expectedJSON1 = '[{"id":"id1","name":"John"},{"id":"id2","name":"Mark"}]';
+            $expectedJSON2 = '[{"id":"id2","name":"Mark"},{"id":"id1","name":"John"}]';
 
-            $this->assertTrue($repository1->toArray() === $expectedArray, $assertMessage);
-            $this->assertTrue($repository1->toJSON() === $expectedJSON, $assertMessage);
+            $repository1Array = $repository1->toArray();
+            $repository1JSON = $repository1->toJSON();
+            $this->assertTrue($repository1Array === $expectedArray1 || $repository1Array === $expectedArray2, $assertMessage);
+            $this->assertTrue($repository1JSON === $expectedJSON1 || $repository1JSON === $expectedJSON2, $assertMessage);
 
-            $repository2 = SampleRepository1::fromJSON($expectedJSON);
-            $this->assertTrue($repository2->toArray() === $expectedArray, $assertMessage);
-            $this->assertTrue($repository2->toJSON() === $expectedJSON, $assertMessage);
+            $repository2 = SampleRepository1::fromJSON($expectedJSON1);
+            $repository2Array = $repository2->toArray();
+            $repository2JSON = $repository2->toJSON();
+            $this->assertTrue($repository2Array === $expectedArray1 || $repository2Array === $expectedArray2, $assertMessage);
+            $this->assertTrue($repository2JSON === $expectedJSON1 || $repository2JSON === $expectedJSON2, $assertMessage);
 
-            $repository3 = SampleRepository1::fromArray($expectedArray);
-            $this->assertTrue($repository3->toArray() === $expectedArray, $assertMessage);
-            $this->assertTrue($repository3->toJSON() === $expectedJSON, $assertMessage);
+            $repository3 = SampleRepository1::fromArray($expectedArray1);
+            $repository3Array = $repository3->toArray();
+            $repository3JSON = $repository3->toJSON();
+            $this->assertTrue($repository3Array === $expectedArray1 || $repository3Array === $expectedArray2, $assertMessage);
+            $this->assertTrue($repository3JSON === $expectedJSON1 || $repository3JSON === $expectedJSON2, $assertMessage);
         }
     }
 
@@ -137,26 +126,26 @@ class ModelsTest extends BearFramework\AddonTests\PHPUnitTestCase
             $repository = new SampleRepository1($dataDriver);
 
             $model = $repository->make();
-            $model->key = 'key1';
+            $model->id = 'id1';
             $model->name = 'John';
 
             $expectedArray = [
-                'key' => 'key1',
+                'id' => 'id1',
                 'name' => 'John'
             ];
-            $expectedJSON = '{"key":"key1","name":"John"}';
+            $expectedJSON = '{"id":"id1","name":"John"}';
             $this->assertTrue($model->toArray() === $expectedArray, $assertMessage);
             $this->assertTrue($model->toJSON() === $expectedJSON, $assertMessage);
 
             $model1 = $repository->makeFromJSON($expectedJSON);
             $this->assertTrue($model1 instanceof SampleModel1, $assertMessage);
-            $this->assertTrue($model1->key === 'key1', $assertMessage);
+            $this->assertTrue($model1->id === 'id1', $assertMessage);
             $this->assertTrue($model1->name === 'John', $assertMessage);
 
             $model2 = $repository->makeFromArray($expectedArray);
-            $this->assertTrue($model1 instanceof SampleModel1, $assertMessage);
-            $this->assertTrue($model1->key === 'key1', $assertMessage);
-            $this->assertTrue($model1->name === 'John', $assertMessage);
+            $this->assertTrue($model2 instanceof SampleModel1, $assertMessage);
+            $this->assertTrue($model2->id === 'id1', $assertMessage);
+            $this->assertTrue($model2->name === 'John', $assertMessage);
         }
     }
 
@@ -170,6 +159,23 @@ class ModelsTest extends BearFramework\AddonTests\PHPUnitTestCase
             public function __construct()
             {
                 $this->useMemoryDataDriver();
+            }
+        };
+
+        $this->expectException(\Exception::class);
+        $repository->make();
+    }
+
+    /**
+     * 
+     */
+    public function testInvalidModelClass()
+    {
+        $repository = new class extends \BearFramework\Models\ModelsRepository {
+
+            public function __construct()
+            {
+                $this->setModel('InvalidModel');
             }
         };
 
@@ -194,6 +200,334 @@ class ModelsTest extends BearFramework\AddonTests\PHPUnitTestCase
         $model->name = 'John';
         $this->expectException(\Exception::class);
         $repository->set($model);
+    }
+
+    /**
+     * 
+     */
+    public function testOverwriteModel()
+    {
+        $this->expectException(\Exception::class);
+        $repository = new class extends \BearFramework\Models\ModelsRepository {
+
+            public function __construct()
+            {
+                $this->setModel(SampleModel1::class);
+                $this->setModel(SampleModel1::class);
+            }
+        };
+    }
+
+    /**
+     * 
+     */
+    public function testOverwriteDataDriver()
+    {
+        $this->expectException(\Exception::class);
+        $repository = new class extends \BearFramework\Models\ModelsRepository {
+
+            public function __construct()
+            {
+                $this->useMemoryDataDriver();
+                $this->useMemoryDataDriver();
+            }
+        };
+    }
+
+    /**
+     * 
+     */
+    public function testEmptyModelID()
+    {
+        $repository = new class extends \BearFramework\Models\ModelsRepository {
+
+            public function __construct()
+            {
+                $this->setModel(SampleModel1::class, 'id');
+                $this->useMemoryDataDriver();
+            }
+        };
+        $model = new SampleModel1();
+        $model->id = '';
+        $model->name = 'John';
+        $this->expectException(\InvalidArgumentException::class);
+        $repository->set($model);
+    }
+
+    /**
+     * 
+     */
+    public function testInvalidModelID()
+    {
+        $repository = new class extends \BearFramework\Models\ModelsRepository {
+
+            public function __construct()
+            {
+                $this->setModel(SampleModel2::class, 'id');
+                $this->useMemoryDataDriver();
+            }
+        };
+        $model = new SampleModel2();
+        $model->id = [1];
+        $model->name = 'John';
+        $this->expectException(\InvalidArgumentException::class);
+        $repository->set($model);
+    }
+
+    /**
+     * 
+     */
+    public function testMissingModelID()
+    {
+        $repository = new class extends \BearFramework\Models\ModelsRepository {
+
+            public function __construct()
+            {
+                $this->setModel(SampleModel2::class, 'id');
+                $this->useMemoryDataDriver();
+            }
+        };
+        $model = new SampleModel2();
+        unset($model->id);
+        $model->name = 'John';
+        $this->expectException(\InvalidArgumentException::class);
+        $repository->set($model);
+    }
+
+    /**
+     * 
+     */
+    public function testInvalidModelSet()
+    {
+        $repository = new class extends \BearFramework\Models\ModelsRepository {
+
+            public function __construct()
+            {
+                $this->setModel(SampleModel1::class, 'id');
+                $this->useMemoryDataDriver();
+            }
+        };
+        $model = new SampleModel2();
+        $model->id = 'id1';
+        $model->name = 'John';
+        $this->expectException(\InvalidArgumentException::class);
+        $repository->set($model);
+    }
+
+    /**
+     * 
+     */
+    public function testTraitCombinations1()
+    {
+        $modelsArray = [];
+        $model = new SampleModel1();
+        $model->id = 'id1';
+        $model->name = 'John';
+        $modelsArray[] = $model->toArray();
+        $model = new SampleModel1();
+        $model->id = 'id2';
+        $model->name = 'Mark';
+        $modelsArray[] = $model->toArray();
+
+        $repository = new class {
+
+            use \BearFramework\Models\ModelsRepositoryTrait;
+            use \BearFramework\Models\ModelsRepositoryFromArrayTrait;
+            use \BearFramework\Models\ModelsRepositoryToArrayTrait;
+
+            function __construct()
+            {
+                $this->setModel(SampleModel1::class, 'id');
+                $this->useMemoryDataDriver();
+            }
+        };
+
+        $this->assertEquals($modelsArray, $repository::fromArray($modelsArray)->toArray());
+    }
+
+    /**
+     * 
+     */
+    public function testTraitCombinations2()
+    {
+        $modelsArray = [];
+        $model = new SampleModel1();
+        $model->id = 'id1';
+        $model->name = 'John';
+        $modelsArray[] = $model->toArray();
+        $model = new SampleModel1();
+        $model->id = 'id2';
+        $model->name = 'Mark';
+        $modelsArray[] = $model->toArray();
+        $modelsJSON = json_encode($modelsArray);
+
+        $repository = new class {
+
+            use \BearFramework\Models\ModelsRepositoryTrait;
+            use \BearFramework\Models\ModelsRepositoryFromJSONTrait;
+            use \BearFramework\Models\ModelsRepositoryToJSONTrait;
+
+            function __construct()
+            {
+                $this->setModel(SampleModel1::class, 'id');
+                $this->useMemoryDataDriver();
+            }
+        };
+
+        $this->assertEquals($modelsJSON, $repository::fromJSON($modelsJSON)->toJSON());
+    }
+
+    /**
+     * 
+     */
+    public function testTraitCombinations3()
+    {
+        $model = new SampleModel1();
+        $model->id = 'id1';
+        $model->name = 'John';
+
+        $repository = new class {
+
+            use \BearFramework\Models\ModelsRepositoryTrait;
+            use \BearFramework\Models\ModelsRepositoryMakeFromArrayTrait;
+
+            function __construct()
+            {
+                $this->setModel(SampleModel1::class, 'id');
+                $this->useMemoryDataDriver();
+            }
+        };
+        $newModel = $repository->makeFromArray($model->toArray());
+
+        $this->assertEquals('SampleModel1', get_class($newModel));
+        $this->assertEquals('id1', $newModel->id);
+        $this->assertEquals('John', $newModel->name);
+    }
+
+    /**
+     * 
+     */
+    public function testTraitCombinations4()
+    {
+        $model = new SampleModel1();
+        $model->id = 'id1';
+        $model->name = 'John';
+
+        $repository = new class {
+
+            use \BearFramework\Models\ModelsRepositoryTrait;
+            use \BearFramework\Models\ModelsRepositoryMakeFromJSONTrait;
+
+            function __construct()
+            {
+                $this->setModel(SampleModel1::class, 'id');
+                $this->useMemoryDataDriver();
+            }
+        };
+        $newModel = $repository->makeFromJSON(json_encode($model->toArray()));
+
+        $this->assertEquals('SampleModel1', get_class($newModel));
+        $this->assertEquals('id1', $newModel->id);
+        $this->assertEquals('John', $newModel->name);
+    }
+
+    /**
+     * 
+     */
+    public function testTraitCombinations5()
+    {
+        $repository = new class {
+
+            use \BearFramework\Models\ModelsRepositoryTrait;
+            use \BearFramework\Models\ModelsRepositoryMakeTrait;
+
+            function __construct()
+            {
+                $this->setModel(SampleModel1::class, 'id');
+                $this->useMemoryDataDriver();
+            }
+        };
+        $model = $repository->make();
+
+        $this->assertEquals('SampleModel1', get_class($model));
+        $this->assertTrue(strlen($model->id) === 32);
+        $this->assertEquals(null, $model->name);
+    }
+
+    /**
+     * 
+     */
+    public function testTraitCombinations6()
+    {
+        $modelsArray = [];
+        $model = new SampleModel1();
+        $model->id = 'id1';
+        $model->name = 'John';
+        $modelsArray[] = $model->toArray();
+        $model = new SampleModel1();
+        $model->id = 'id2';
+        $model->name = 'Mark';
+        $modelsArray[] = $model->toArray();
+
+        $repository = new class {
+
+            use \BearFramework\Models\ModelsRepositoryTrait;
+            use \BearFramework\Models\ModelsRepositoryFromArrayTrait;
+            use \BearFramework\Models\ModelsRepositoryToArrayTrait;
+            use \BearFramework\Models\ModelsRepositoryModifyTrait;
+
+            function __construct()
+            {
+                $this->setModel(SampleModel1::class, 'id');
+                $this->useMemoryDataDriver();
+            }
+        };
+        $newRepository = $repository::fromArray($modelsArray);
+        $model = new SampleModel1();
+        $model->id = 'id3';
+        $model->name = 'Matt';
+        $newRepository->set($model);
+        $this->assertEquals(array_merge($modelsArray, [['id' => 'id3', 'name' => 'Matt']]), $newRepository->toArray());
+        $newRepository->delete('id3');
+        $this->assertEquals($modelsArray, $newRepository->toArray());
+        $newRepository->deleteAll('id3');
+        $this->assertEquals([], $newRepository->toArray());
+    }
+
+    /**
+     * 
+     */
+    public function testTraitCombinations7()
+    {
+        $modelsArray = [];
+        $model = new SampleModel1();
+        $model->id = 'id1';
+        $model->name = 'John';
+        $modelsArray[] = $model->toArray();
+        $model = new SampleModel1();
+        $model->id = 'id2';
+        $model->name = 'Mark';
+        $modelsArray[] = $model->toArray();
+
+        $repository = new class {
+
+            use \BearFramework\Models\ModelsRepositoryTrait;
+            use \BearFramework\Models\ModelsRepositoryFromArrayTrait;
+            use \BearFramework\Models\ModelsRepositoryToArrayTrait;
+            use \BearFramework\Models\ModelsRepositoryRequestTrait;
+
+            function __construct()
+            {
+                $this->setModel(SampleModel1::class, 'id');
+                $this->useMemoryDataDriver();
+            }
+        };
+        $newRepository = $repository::fromArray($modelsArray);
+        $this->assertEquals($modelsArray[0], $newRepository->get('id1')->toArray());
+        $this->assertEquals(true, $newRepository->exists('id1'));
+        $this->assertEquals(null, $newRepository->get('id3'));
+        $this->assertEquals(false, $newRepository->exists('id3'));
+        $this->assertEquals($modelsArray, $newRepository->getList()->toArray());
     }
 
 }
