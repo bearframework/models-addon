@@ -175,11 +175,11 @@ trait ModelsRepositoryTrait
         if (strlen($id) === 0) {
             throw new \InvalidArgumentException('');
         }
-        $modelData = $model->toArray();
+        $modelData = $model->toJSON(); // toJSON is used because toArray does not encode the binary data.
         if (method_exists($model, '__modelSleep')) {
-            $modelData = $model->__modelSleep($modelData);
+            $modelData = json_encode($model->__modelSleep(json_decode($modelData, true)));
         }
-        $this->internalModelsRepositoryGetDataDriver()->set($id, json_encode($modelData));
+        $this->internalModelsRepositoryGetDataDriver()->set($id, $modelData);
     }
 
     /**
