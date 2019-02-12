@@ -175,7 +175,11 @@ trait ModelsRepositoryTrait
         if (strlen($id) === 0) {
             throw new \InvalidArgumentException('');
         }
-        $this->internalModelsRepositoryGetDataDriver()->set($id, $model->toJSON());
+        $modelData = $model->toArray();
+        if (method_exists($model, '__modelSleep')) {
+            $modelData = $model->__modelSleep($modelData);
+        }
+        $this->internalModelsRepositoryGetDataDriver()->set($id, json_encode($modelData));
     }
 
     /**
