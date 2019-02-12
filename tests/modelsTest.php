@@ -29,11 +29,11 @@ class ModelsTest extends BearFramework\AddonTests\PHPUnitTestCase
             $repository->set($model);
             $modelID = $model->id;
 
-            $this->assertTrue($repository->getList()->length === 1, $assertMessage);
+            $this->assertTrue($repository->getList()->count() === 1, $assertMessage);
             $this->assertTrue($repository->get($modelID)->name === 'John', $assertMessage);
             $this->assertTrue($repository->exists($modelID) === true, $assertMessage);
             $repository->delete($modelID);
-            $this->assertTrue($repository->getList()->length === 0, $assertMessage);
+            $this->assertTrue($repository->getList()->count() === 0, $assertMessage);
             $this->assertTrue($repository->get($modelID) === null, $assertMessage);
             $this->assertTrue($repository->exists($modelID) === false, $assertMessage);
 
@@ -45,9 +45,9 @@ class ModelsTest extends BearFramework\AddonTests\PHPUnitTestCase
             $model->name = 'Matt';
             $repository->set($model);
 
-            $this->assertTrue($repository->getList()->length === 2, $assertMessage);
+            $this->assertTrue($repository->getList()->count() === 2, $assertMessage);
             $repository->deleteAll();
-            $this->assertTrue($repository->getList()->length === 0, $assertMessage);
+            $this->assertTrue($repository->getList()->count() === 0, $assertMessage);
         }
     }
 

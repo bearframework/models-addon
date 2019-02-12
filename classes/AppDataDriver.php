@@ -37,7 +37,7 @@ class AppDataDriver implements \BearFramework\Models\IDataDriver
     public function __construct(string $dataKeyPrefix)
     {
         $this->app = App::get();
-        if (strlen($dataKeyPrefix) === 0 || !$this->app->data->isValidKey($dataKeyPrefix . 'example')) {
+        if (strlen($dataKeyPrefix) === 0 || !$this->app->data->validate($dataKeyPrefix . 'example')) {
             throw new \InvalidArgumentException('The dataKeyPrefix provided (' . $dataKeyPrefix . ') is not valid!');
         }
         $this->dataKeyPrefix = $dataKeyPrefix;
@@ -94,7 +94,7 @@ class AppDataDriver implements \BearFramework\Models\IDataDriver
                 ->filterBy('key', $this->dataKeyPrefix, 'startWith')
                 ->sliceProperties(['key']);
         foreach ($list as $item) {
-            $this->app->data->delete($item->key);
+            $this->app->data->delete($item['key']);
         }
     }
 
@@ -109,7 +109,7 @@ class AppDataDriver implements \BearFramework\Models\IDataDriver
                 ->filterBy('key', $this->dataKeyPrefix, 'startWith')
                 ->sliceProperties(['value']);
         foreach ($list as $item) {
-            $result[] = $item->value;
+            $result[] = $item['value'];
         }
         return $result;
     }

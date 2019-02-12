@@ -13,12 +13,13 @@
     ],
     "require": {
         "php": ">=7.1.0",
-        "bearframework/bearframework": "0.10.*",
-        "ivopetkov/data-object": "^0.5.8"
+        "bearframework/bearframework": "0.11.*",
+        "ivopetkov/data-object": "0.6.*"
     },
     "require-dev": {
         "bearframework/addon-tests": "0.1.*",
-        "phpunit/phpunit": "7.*"
+        "phpunit/phpunit": "7.*",
+        "ivopetkov/docs-generator": "0.1.*"
     },
     "autoload": {
         "files": ["autoload.php"]
