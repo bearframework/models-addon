@@ -17,7 +17,7 @@
         "ivopetkov/data-object": "0.6.*"
     },
     "require-dev": {
-        "bearframework/addon-tests": "0.1.*",
+        "bearframework/addon-tests": "0.3.*",
         "phpunit/phpunit": "7.*",
         "ivopetkov/docs-generator": "0.1.*"
     },
