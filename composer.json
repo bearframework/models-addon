@@ -1,7 +1,11 @@
 {
     "name": "bearframework/models-addon",
     "description": "Bear Framework Models",
-    "keywords": ["models", "addon", "Bear Framework"],
+    "keywords": [
+        "models",
+        "addon",
+        "Bear Framework"
+    ],
     "homepage": "https://github.com/bearframework/models-addon",
     "license": "MIT",
     "authors": [
@@ -14,7 +18,7 @@
     "require": {
         "php": ">=7.1.0",
         "bearframework/bearframework": "1.*",
-        "ivopetkov/data-object": "0.7.*"
+        "ivopetkov/data-object": "0.8.*"
     },
     "require-dev": {
         "bearframework/addon-tests": "0.3.*",
@@ -22,7 +26,9 @@
         "ivopetkov/docs-generator": "0.2.*"
     },
     "autoload": {
-        "files": ["autoload.php"]
+        "files": [
+            "autoload.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

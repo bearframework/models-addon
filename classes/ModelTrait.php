@@ -26,11 +26,21 @@ trait ModelTrait
         fromJSON as private dataObjectFromJSON;
     }
 
+    static private  $internalModelsModelCache = [];
+
+    static private function internalModelsGetModel(string $class)
+    {
+        if (!isset(self::$internalModelsModelCache[$class])) {
+            $model = new $class();
+            self::$internalModelsModelCache[$class] = [$model, method_exists($model, '__modelWakeup')];
+        }
+        return [clone (self::$internalModelsModelCache[$class][0]), self::$internalModelsModelCache[$class][1]];
+    }
+
     static public function fromArray(array $data)
     {
-        $class = get_called_class();
-        $model = new $class();
-        if (method_exists($model, '__modelWakeup')) {
+        list($model, $hasWakeup) = self::internalModelsGetModel(get_called_class());
+        if ($hasWakeup) {
             $data = $model->__modelWakeup($data);
         }
         $model->__fromArray($data);
@@ -39,9 +49,8 @@ trait ModelTrait
 
     static public function fromJSON(string $data)
     {
-        $class = get_called_class();
-        $model = new $class();
-        if (method_exists($model, '__modelWakeup')) {
+        list($model, $hasWakeup) = self::internalModelsGetModel(get_called_class());
+        if ($hasWakeup) {
             $data = json_decode($data, true);
             $data = $model->__modelWakeup($data);
             $data = json_encode($data);
@@ -49,5 +58,4 @@ trait ModelTrait
         $model->__fromJSON($data);
         return $model;
     }
-
 }
