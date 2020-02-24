@@ -15,5 +15,4 @@ namespace BearFramework\Models;
  */
 class ModelsList extends \IvoPetkov\DataList
 {
-    
 }

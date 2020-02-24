@@ -81,5 +81,4 @@ class MemoryDataDriver implements \BearFramework\Models\IDataDriver
     {
         return array_values($this->data);
     }
-
 }

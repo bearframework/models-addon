@@ -23,5 +23,4 @@ trait ModelsRepositoryToArrayTrait
     {
         return $this->internalModelsRepositoryGetList()->toArray();
     }
-
 }

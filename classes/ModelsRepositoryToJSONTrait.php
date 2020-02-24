@@ -23,5 +23,4 @@ trait ModelsRepositoryToJSONTrait
     {
         return $this->internalModelsRepositoryGetList()->toJSON();
     }
-
 }

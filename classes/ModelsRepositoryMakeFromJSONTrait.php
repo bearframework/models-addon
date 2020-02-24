@@ -24,5 +24,4 @@ trait ModelsRepositoryMakeFromJSONTrait
     {
         return $this->internalModelsRepositoryMakeFromJSON($data);
     }
-
 }

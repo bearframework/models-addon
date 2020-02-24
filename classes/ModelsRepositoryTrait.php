@@ -198,5 +198,4 @@ trait ModelsRepositoryTrait
             return $result;
         });
     }
-
 }

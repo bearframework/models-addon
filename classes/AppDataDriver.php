@@ -91,8 +91,8 @@ class AppDataDriver implements \BearFramework\Models\IDataDriver
     public function deleteAll(): void
     {
         $list = $this->app->data->getList()
-                ->filterBy('key', $this->dataKeyPrefix, 'startWith')
-                ->sliceProperties(['key']);
+            ->filterBy('key', $this->dataKeyPrefix, 'startWith')
+            ->sliceProperties(['key']);
         foreach ($list as $item) {
             $this->app->data->delete($item['key']);
         }
@@ -106,12 +106,11 @@ class AppDataDriver implements \BearFramework\Models\IDataDriver
     {
         $result = [];
         $list = $this->app->data->getList()
-                ->filterBy('key', $this->dataKeyPrefix, 'startWith')
-                ->sliceProperties(['value']);
+            ->filterBy('key', $this->dataKeyPrefix, 'startWith')
+            ->sliceProperties(['value']);
         foreach ($list as $item) {
             $result[] = $item['value'];
         }
         return $result;
     }
-
 }

@@ -27,5 +27,4 @@ trait ModelsRepositoryFromArrayTrait
             $this->internalModelsRepositorySet($this->internalModelsRepositoryMakeFromArray($item));
         }
     }
-
 }

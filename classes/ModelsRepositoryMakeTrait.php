@@ -32,7 +32,6 @@ trait ModelsRepositoryMakeTrait
             $modelClassName = $this->internalModelsRepositoryGetModelClassName();
             $this->internalModelsRepositoryModelObjectCache = new $modelClassName();
         }
-        return clone($this->internalModelsRepositoryModelObjectCache);
+        return clone ($this->internalModelsRepositoryModelObjectCache);
     }
-
 }

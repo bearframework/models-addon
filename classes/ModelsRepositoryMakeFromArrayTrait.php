@@ -24,5 +24,4 @@ trait ModelsRepositoryMakeFromArrayTrait
     {
         return $this->internalModelsRepositoryMakeFromArray($data);
     }
-
 }

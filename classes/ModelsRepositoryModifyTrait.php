@@ -44,5 +44,4 @@ trait ModelsRepositoryModifyTrait
     {
         $this->internalModelsRepositoryGetDataDriver()->deleteAll();
     }
-
 }

@@ -47,5 +47,4 @@ trait ModelsRepositoryRequestTrait
     {
         return $this->internalModelsRepositoryGetList();
     }
-
 }

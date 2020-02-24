@@ -28,5 +28,4 @@ trait ModelsRepositoryFromJSONTrait
             $this->internalModelsRepositorySet($this->internalModelsRepositoryMakeFromJSON(json_encode($item)));
         }
     }
-
 }
