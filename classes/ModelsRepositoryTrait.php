@@ -162,18 +162,18 @@ trait ModelsRepositoryTrait
     {
         $modelClassName = $this->internalModelsRepositoryGetModelClassName();
         if (!is_a($model, $modelClassName)) {
-            throw new \InvalidArgumentException('');
+            throw new \InvalidArgumentException('The model provided is not of class ' . $modelClassName . '!');
         }
         $modelIDProperty = $this->internalModelsRepositoryGetModelIDProperty();
         if (!isset($model->$modelIDProperty)) {
-            throw new \InvalidArgumentException('');
+            throw new \InvalidArgumentException('The value for the model ID property (' . $modelIDProperty . ') is not set!');
         }
         $id = $model->$modelIDProperty;
         if (!is_string($id)) {
-            throw new \InvalidArgumentException('');
+            throw new \InvalidArgumentException('The ID value of the model is not a string!');
         }
         if (strlen($id) === 0) {
-            throw new \InvalidArgumentException('');
+            throw new \InvalidArgumentException('The ID value of the model is empty!');
         }
         $modelData = $model->toJSON(); // toJSON is used because toArray does not encode the binary data.
         if (method_exists($model, '__modelSleep')) {
