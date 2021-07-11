@@ -28,6 +28,17 @@ trait ModelsRepositoryModifyTrait
 
     /**
      * 
+     * @param object $model
+     * @return string
+     * @throws \InvalidArgumentException
+     */
+    public function add($model): string
+    {
+        return $this->internalModelsRepositoryAdd($model);
+    }
+
+    /**
+     * 
      * @param string $id
      * @return void
      */

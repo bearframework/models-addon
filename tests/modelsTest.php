@@ -26,7 +26,7 @@ class ModelsTest extends BearFramework\AddonTests\PHPUnitTestCase
 
             $model = $repository->make();
             $model->name = 'John';
-            $repository->set($model);
+            $repository->add($model);
             $modelID = $model->id;
 
             $this->assertTrue($repository->getList()->count() === 1, $assertMessage);
@@ -39,11 +39,11 @@ class ModelsTest extends BearFramework\AddonTests\PHPUnitTestCase
 
             $model = $repository->make();
             $model->name = 'Mark';
-            $repository->set($model);
+            $repository->add($model);
 
             $model = $repository->make();
             $model->name = 'Matt';
-            $repository->set($model);
+            $repository->add($model);
 
             $this->assertTrue($repository->getList()->count() === 2, $assertMessage);
             $repository->deleteAll();
@@ -154,7 +154,8 @@ class ModelsTest extends BearFramework\AddonTests\PHPUnitTestCase
      */
     public function testNoModelSpecified()
     {
-        $repository = new class extends \BearFramework\Models\ModelsRepository {
+        $repository = new class extends \BearFramework\Models\ModelsRepository
+        {
 
             public function __construct()
             {
@@ -171,7 +172,8 @@ class ModelsTest extends BearFramework\AddonTests\PHPUnitTestCase
      */
     public function testInvalidModelClass()
     {
-        $repository = new class extends \BearFramework\Models\ModelsRepository {
+        $repository = new class extends \BearFramework\Models\ModelsRepository
+        {
 
             public function __construct()
             {
@@ -188,7 +190,8 @@ class ModelsTest extends BearFramework\AddonTests\PHPUnitTestCase
      */
     public function testNoDataDrivierSpecified()
     {
-        $repository = new class extends \BearFramework\Models\ModelsRepository {
+        $repository = new class extends \BearFramework\Models\ModelsRepository
+        {
 
             public function __construct()
             {
@@ -199,7 +202,7 @@ class ModelsTest extends BearFramework\AddonTests\PHPUnitTestCase
         $model = $repository->make();
         $model->name = 'John';
         $this->expectException(\Exception::class);
-        $repository->set($model);
+        $repository->add($model);
     }
 
     /**
@@ -208,7 +211,8 @@ class ModelsTest extends BearFramework\AddonTests\PHPUnitTestCase
     public function testOverwriteModel()
     {
         $this->expectException(\Exception::class);
-        $repository = new class extends \BearFramework\Models\ModelsRepository {
+        $repository = new class extends \BearFramework\Models\ModelsRepository
+        {
 
             public function __construct()
             {
@@ -224,7 +228,8 @@ class ModelsTest extends BearFramework\AddonTests\PHPUnitTestCase
     public function testOverwriteDataDriver()
     {
         $this->expectException(\Exception::class);
-        $repository = new class extends \BearFramework\Models\ModelsRepository {
+        $repository = new class extends \BearFramework\Models\ModelsRepository
+        {
 
             public function __construct()
             {
@@ -239,7 +244,8 @@ class ModelsTest extends BearFramework\AddonTests\PHPUnitTestCase
      */
     public function testEmptyModelID()
     {
-        $repository = new class extends \BearFramework\Models\ModelsRepository {
+        $repository = new class extends \BearFramework\Models\ModelsRepository
+        {
 
             public function __construct()
             {
@@ -257,9 +263,31 @@ class ModelsTest extends BearFramework\AddonTests\PHPUnitTestCase
     /**
      * 
      */
+    public function testNotEmptyModelID()
+    {
+        $repository = new class extends \BearFramework\Models\ModelsRepository
+        {
+
+            public function __construct()
+            {
+                $this->setModel(SampleModel1::class, 'id');
+                $this->useMemoryDataDriver();
+            }
+        };
+        $model = new SampleModel1();
+        $model->id = 'test';
+        $model->name = 'John';
+        $this->expectException(\InvalidArgumentException::class);
+        $repository->add($model);
+    }
+
+    /**
+     * 
+     */
     public function testInvalidModelID()
     {
-        $repository = new class extends \BearFramework\Models\ModelsRepository {
+        $repository = new class extends \BearFramework\Models\ModelsRepository
+        {
 
             public function __construct()
             {
@@ -279,7 +307,8 @@ class ModelsTest extends BearFramework\AddonTests\PHPUnitTestCase
      */
     public function testMissingModelID()
     {
-        $repository = new class extends \BearFramework\Models\ModelsRepository {
+        $repository = new class extends \BearFramework\Models\ModelsRepository
+        {
 
             public function __construct()
             {
@@ -299,7 +328,8 @@ class ModelsTest extends BearFramework\AddonTests\PHPUnitTestCase
      */
     public function testInvalidModelSet()
     {
-        $repository = new class extends \BearFramework\Models\ModelsRepository {
+        $repository = new class extends \BearFramework\Models\ModelsRepository
+        {
 
             public function __construct()
             {
@@ -329,7 +359,8 @@ class ModelsTest extends BearFramework\AddonTests\PHPUnitTestCase
         $model->name = 'Mark';
         $modelsArray[] = $model->toArray();
 
-        $repository = new class {
+        $repository = new class
+        {
 
             use \BearFramework\Models\ModelsRepositoryTrait;
             use \BearFramework\Models\ModelsRepositoryFromArrayTrait;
@@ -361,7 +392,8 @@ class ModelsTest extends BearFramework\AddonTests\PHPUnitTestCase
         $modelsArray[] = $model->toArray();
         $modelsJSON = json_encode($modelsArray);
 
-        $repository = new class {
+        $repository = new class
+        {
 
             use \BearFramework\Models\ModelsRepositoryTrait;
             use \BearFramework\Models\ModelsRepositoryFromJSONTrait;
@@ -386,7 +418,8 @@ class ModelsTest extends BearFramework\AddonTests\PHPUnitTestCase
         $model->id = 'id1';
         $model->name = 'John';
 
-        $repository = new class {
+        $repository = new class
+        {
 
             use \BearFramework\Models\ModelsRepositoryTrait;
             use \BearFramework\Models\ModelsRepositoryMakeFromArrayTrait;
@@ -413,7 +446,8 @@ class ModelsTest extends BearFramework\AddonTests\PHPUnitTestCase
         $model->id = 'id1';
         $model->name = 'John';
 
-        $repository = new class {
+        $repository = new class
+        {
 
             use \BearFramework\Models\ModelsRepositoryTrait;
             use \BearFramework\Models\ModelsRepositoryMakeFromJSONTrait;
@@ -436,7 +470,8 @@ class ModelsTest extends BearFramework\AddonTests\PHPUnitTestCase
      */
     public function testTraitCombinations5()
     {
-        $repository = new class {
+        $repository = new class
+        {
 
             use \BearFramework\Models\ModelsRepositoryTrait;
             use \BearFramework\Models\ModelsRepositoryMakeTrait;
@@ -450,7 +485,7 @@ class ModelsTest extends BearFramework\AddonTests\PHPUnitTestCase
         $model = $repository->make();
 
         $this->assertEquals('SampleModel1', get_class($model));
-        $this->assertTrue(strlen($model->id) === 32);
+        $this->assertEquals(null, $model->id);
         $this->assertEquals(null, $model->name);
     }
 
@@ -469,7 +504,8 @@ class ModelsTest extends BearFramework\AddonTests\PHPUnitTestCase
         $model->name = 'Mark';
         $modelsArray[] = $model->toArray();
 
-        $repository = new class {
+        $repository = new class
+        {
 
             use \BearFramework\Models\ModelsRepositoryTrait;
             use \BearFramework\Models\ModelsRepositoryFromArrayTrait;
@@ -509,7 +545,8 @@ class ModelsTest extends BearFramework\AddonTests\PHPUnitTestCase
         $model->name = 'Mark';
         $modelsArray[] = $model->toArray();
 
-        $repository = new class {
+        $repository = new class
+        {
 
             use \BearFramework\Models\ModelsRepositoryTrait;
             use \BearFramework\Models\ModelsRepositoryFromArrayTrait;
@@ -529,5 +566,4 @@ class ModelsTest extends BearFramework\AddonTests\PHPUnitTestCase
         $this->assertEquals(false, $newRepository->exists('id3'));
         $this->assertEquals($modelsArray, $newRepository->getList()->toArray());
     }
-
 }

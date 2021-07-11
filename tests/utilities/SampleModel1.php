@@ -18,16 +18,11 @@ class SampleModel1 extends \BearFramework\Models\Model
     public function __construct()
     {
         $this
-                ->defineProperty('id', [
-                    'type' => '?string',
-                    'init' => function() {
-                        return md5(uniqid('', true));
-                    }
-                ])
-                ->defineProperty('name', [
-                    'type' => '?string'
-                ])
-        ;
+            ->defineProperty('id', [
+                'type' => '?string'
+            ])
+            ->defineProperty('name', [
+                'type' => '?string'
+            ]);
     }
-
 }
