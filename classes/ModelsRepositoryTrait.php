@@ -63,12 +63,13 @@ trait ModelsRepositoryTrait
     /**
      * 
      * @param string $dataKeyPrefix
+     * @param callable|null $dataKeyCallback
      * @return void
      * @throws \Exception
      */
-    protected function useAppDataDriver(string $dataKeyPrefix): void
+    protected function useAppDataDriver(string $dataKeyPrefix, callable $dataKeyCallback = null): void
     {
-        $this->setDataDriver(new \BearFramework\Models\AppDataDriver($dataKeyPrefix));
+        $this->setDataDriver(new \BearFramework\Models\AppDataDriver($dataKeyPrefix, $dataKeyCallback));
     }
 
     /**

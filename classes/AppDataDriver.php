@@ -25,6 +25,12 @@ class AppDataDriver implements \BearFramework\Models\IDataDriver
 
     /**
      *
+     * @var string|null
+     */
+    private $dataKeyCallback = null;
+
+    /**
+     *
      * @var \BearFramework\App 
      */
     private $app = null;
@@ -32,15 +38,30 @@ class AppDataDriver implements \BearFramework\Models\IDataDriver
     /**
      * 
      * @param string $dataKeyPrefix
+     * @param callable|null $dataKeyCallback
      * @throws \InvalidArgumentException
      */
-    public function __construct(string $dataKeyPrefix)
+    public function __construct(string $dataKeyPrefix, callable $dataKeyCallback = null)
     {
         $this->app = App::get();
         if (strlen($dataKeyPrefix) === 0 || !$this->app->data->validate($dataKeyPrefix . 'example')) {
             throw new \InvalidArgumentException('The dataKeyPrefix provided (' . $dataKeyPrefix . ') is not valid!');
         }
         $this->dataKeyPrefix = $dataKeyPrefix;
+        $this->dataKeyCallback = $dataKeyCallback;
+    }
+
+    /**
+     * 
+     * @param string $id
+     * @return string
+     */
+    private function getDataKey(string $id): string
+    {
+        if ($this->dataKeyCallback !== null) {
+            return call_user_func($this->dataKeyCallback, $id);
+        }
+        return md5($id) . '.json';
     }
 
     /**
@@ -51,7 +72,7 @@ class AppDataDriver implements \BearFramework\Models\IDataDriver
      */
     public function set(string $id, string $json): void
     {
-        $this->app->data->setValue($this->dataKeyPrefix . md5($id) . '.json', $json);
+        $this->app->data->setValue($this->dataKeyPrefix . $this->getDataKey($id), $json);
     }
 
     /**
@@ -61,7 +82,7 @@ class AppDataDriver implements \BearFramework\Models\IDataDriver
      */
     public function get(string $id): ?string
     {
-        return $this->app->data->getValue($this->dataKeyPrefix . md5($id) . '.json');
+        return $this->app->data->getValue($this->dataKeyPrefix . $this->getDataKey($id));
     }
 
     /**
@@ -71,7 +92,7 @@ class AppDataDriver implements \BearFramework\Models\IDataDriver
      */
     public function exists(string $id): bool
     {
-        return $this->app->data->exists($this->dataKeyPrefix . md5($id) . '.json');
+        return $this->app->data->exists($this->dataKeyPrefix . $this->getDataKey($id));
     }
 
     /**
@@ -81,7 +102,7 @@ class AppDataDriver implements \BearFramework\Models\IDataDriver
      */
     public function delete(string $id): void
     {
-        $this->app->data->delete($this->dataKeyPrefix . md5($id) . '.json');
+        $this->app->data->delete($this->dataKeyPrefix . $this->getDataKey($id));
     }
 
     /**
