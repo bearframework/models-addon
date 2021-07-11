@@ -107,7 +107,7 @@ class AppDataDriver implements \BearFramework\Models\IDataDriver
         $result = [];
         $list = $this->app->data->getList()
             ->filterBy('key', $this->dataKeyPrefix, 'startWith')
-            ->sliceProperties(['value']);
+            ->sliceProperties(['key', 'value']); // Key is requested, because there is a bug when applying the filters multiple times.
         foreach ($list as $item) {
             $result[] = $item['value'];
         }
