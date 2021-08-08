@@ -8,7 +8,7 @@
  */
 
 BearFramework\Addons::register('bearframework/models-addon', __DIR__, [
-    'require' => [
-        'ivopetkov/locks-bearframework-addon'
-    ]
+    // 'require' => [
+    //     'ivopetkov/locks-bearframework-addon'
+    // ]
 ]);

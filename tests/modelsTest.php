@@ -25,8 +25,10 @@ class ModelsTest extends BearFramework\AddonTests\PHPUnitTestCase
             $repository = new SampleRepository1($dataDriver);
 
             $model = $repository->make();
+            $model->id = '1';
             $model->name = 'John';
-            $repository->add($model);
+            //$repository->add($model);
+            $repository->set($model);
             $modelID = $model->id;
 
             $this->assertTrue($repository->getList()->count() === 1, $assertMessage);
@@ -38,12 +40,16 @@ class ModelsTest extends BearFramework\AddonTests\PHPUnitTestCase
             $this->assertTrue($repository->exists($modelID) === false, $assertMessage);
 
             $model = $repository->make();
+            $model->id = '2';
             $model->name = 'Mark';
-            $repository->add($model);
+            //$repository->add($model);
+            $repository->set($model);
 
             $model = $repository->make();
+            $model->id = '3';
             $model->name = 'Matt';
-            $repository->add($model);
+            //$repository->add($model);
+            $repository->set($model);
 
             $this->assertTrue($repository->getList()->count() === 2, $assertMessage);
             $repository->deleteAll();
@@ -200,9 +206,11 @@ class ModelsTest extends BearFramework\AddonTests\PHPUnitTestCase
         };
 
         $model = $repository->make();
+        $model->id = '1';
         $model->name = 'John';
         $this->expectException(\Exception::class);
-        $repository->add($model);
+        //$repository->add($model);
+        $repository->set($model);
     }
 
     /**
@@ -263,23 +271,23 @@ class ModelsTest extends BearFramework\AddonTests\PHPUnitTestCase
     /**
      * 
      */
-    public function testNotEmptyModelID()
-    {
-        $repository = new class extends \BearFramework\Models\ModelsRepository
-        {
+    // public function testNotEmptyModelID()
+    // {
+    //     $repository = new class extends \BearFramework\Models\ModelsRepository
+    //     {
 
-            public function __construct()
-            {
-                $this->setModel(SampleModel1::class, 'id');
-                $this->useMemoryDataDriver();
-            }
-        };
-        $model = new SampleModel1();
-        $model->id = 'test';
-        $model->name = 'John';
-        $this->expectException(\InvalidArgumentException::class);
-        $repository->add($model);
-    }
+    //         public function __construct()
+    //         {
+    //             $this->setModel(SampleModel1::class, 'id');
+    //             $this->useMemoryDataDriver();
+    //         }
+    //     };
+    //     $model = new SampleModel1();
+    //     $model->id = 'test';
+    //     $model->name = 'John';
+    //     $this->expectException(\InvalidArgumentException::class);
+    //     $repository->add($model);
+    // }
 
     /**
      * 

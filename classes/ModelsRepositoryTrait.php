@@ -178,20 +178,20 @@ trait ModelsRepositoryTrait
         if (strlen($id) === 0) {
             throw new \InvalidArgumentException('The ID value of the model is empty!');
         }
-        $app = App::get();
-        $lockKey = 'bearframework-models-modify-' . $modelClassName;
-        $app->locks->acquire($lockKey);
-        try {
-            $modelData = $model->toJSON(); // toJSON is used because toArray does not encode the binary data.
-            if (method_exists($model, '__modelSleep')) {
-                $modelData = json_encode($model->__modelSleep(json_decode($modelData, true)));
-            }
-            $this->internalModelsRepositoryGetDataDriver()->set($id, $modelData);
-            $app->locks->release($lockKey);
-        } catch (\Exception $e) {
-            $app->locks->release($lockKey);
-            throw $e;
+        // $app = App::get();
+        // $lockKey = 'bearframework-models-modify-' . $modelClassName;
+        // $app->locks->acquire($lockKey);
+        // try {
+        $modelData = $model->toJSON(); // toJSON is used because toArray does not encode the binary data.
+        if (method_exists($model, '__modelSleep')) {
+            $modelData = json_encode($model->__modelSleep(json_decode($modelData, true)));
         }
+        $this->internalModelsRepositoryGetDataDriver()->set($id, $modelData);
+        //$app->locks->release($lockKey);
+        // } catch (\Exception $e) {
+        //     $app->locks->release($lockKey);
+        //     throw $e;
+        // }
     }
 
     /**
@@ -200,44 +200,44 @@ trait ModelsRepositoryTrait
      * @return string
      * @throws \InvalidArgumentException
      */
-    private function internalModelsRepositoryAdd($model): string
-    {
-        $modelClassName = $this->internalModelsRepositoryGetModelClassName();
-        if (!is_a($model, $modelClassName)) {
-            throw new \InvalidArgumentException('The model provided is not of class ' . $modelClassName . '!');
-        }
-        $modelIDProperty = $this->internalModelsRepositoryGetModelIDProperty();
-        if (strlen($model->$modelIDProperty) > 0) {
-            throw new \InvalidArgumentException('The value for the model ID property (' . $modelIDProperty . ') must be null!');
-        }
-        $app = App::get();
-        $lockKey = 'bearframework-models-modify-' . $modelClassName;
-        $app->locks->acquire($lockKey);
-        try {
-            $id = null;
-            for ($i = 0; $i < 1000; $i++) {
-                $generatedID = md5(uniqid());
-                if (!$this->internalModelsRepositoryGetDataDriver()->exists($generatedID)) {
-                    $id = $generatedID;
-                    break;
-                }
-            }
-            if ($id === null) {
-                throw new \Error('Cannot generate model id!');
-            }
-            $model->$modelIDProperty = $id;
-            $modelData = $model->toJSON(); // toJSON is used because toArray does not encode the binary data.
-            if (method_exists($model, '__modelSleep')) {
-                $modelData = json_encode($model->__modelSleep(json_decode($modelData, true)));
-            }
-            $this->internalModelsRepositoryGetDataDriver()->set($id, $modelData);
-            $app->locks->release($lockKey);
-        } catch (\Exception $e) {
-            $app->locks->release($lockKey);
-            throw $e;
-        }
-        return $id;
-    }
+    // private function internalModelsRepositoryAdd($model): string
+    // {
+    //     $modelClassName = $this->internalModelsRepositoryGetModelClassName();
+    //     if (!is_a($model, $modelClassName)) {
+    //         throw new \InvalidArgumentException('The model provided is not of class ' . $modelClassName . '!');
+    //     }
+    //     $modelIDProperty = $this->internalModelsRepositoryGetModelIDProperty();
+    //     if (strlen($model->$modelIDProperty) > 0) {
+    //         throw new \InvalidArgumentException('The value for the model ID property (' . $modelIDProperty . ') must be null!');
+    //     }
+    //     $app = App::get();
+    //     $lockKey = 'bearframework-models-modify-' . $modelClassName;
+    //     $app->locks->acquire($lockKey);
+    //     try {
+    //         $id = null;
+    //         for ($i = 0; $i < 1000; $i++) {
+    //             $generatedID = md5(uniqid());
+    //             if (!$this->internalModelsRepositoryGetDataDriver()->exists($generatedID)) {
+    //                 $id = $generatedID;
+    //                 break;
+    //             }
+    //         }
+    //         if ($id === null) {
+    //             throw new \Error('Cannot generate model id!');
+    //         }
+    //         $model->$modelIDProperty = $id;
+    //         $modelData = $model->toJSON(); // toJSON is used because toArray does not encode the binary data.
+    //         if (method_exists($model, '__modelSleep')) {
+    //             $modelData = json_encode($model->__modelSleep(json_decode($modelData, true)));
+    //         }
+    //         $this->internalModelsRepositoryGetDataDriver()->set($id, $modelData);
+    //         $app->locks->release($lockKey);
+    //     } catch (\Exception $e) {
+    //         $app->locks->release($lockKey);
+    //         throw $e;
+    //     }
+    //     return $id;
+    // }
 
     /**
      * 

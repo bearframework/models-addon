@@ -32,10 +32,10 @@ trait ModelsRepositoryModifyTrait
      * @return string
      * @throws \InvalidArgumentException
      */
-    public function add($model): string
-    {
-        return $this->internalModelsRepositoryAdd($model);
-    }
+    // public function add($model): string
+    // {
+    //     return $this->internalModelsRepositoryAdd($model);
+    // }
 
     /**
      * 
