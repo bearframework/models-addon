@@ -26,8 +26,17 @@ trait ModelTrait
         fromJSON as private dataObjectFromJSON;
     }
 
+    /**
+     * 
+     * @var array
+     */
     static private  $internalModelsModelCache = [];
 
+    /**
+     * 
+     * @param string $class
+     * @return array
+     */
     static private function internalModelsGetModel(string $class)
     {
         if (!isset(self::$internalModelsModelCache[$class])) {
@@ -37,6 +46,11 @@ trait ModelTrait
         return [clone (self::$internalModelsModelCache[$class][0]), self::$internalModelsModelCache[$class][1]];
     }
 
+    /**
+     * 
+     * @param array $data
+     * @return object
+     */
     static public function fromArray(array $data)
     {
         list($model, $hasWakeup) = self::internalModelsGetModel(get_called_class());
@@ -47,6 +61,11 @@ trait ModelTrait
         return $model;
     }
 
+    /**
+     * 
+     * @param string $data
+     * @return object
+     */
     static public function fromJSON(string $data)
     {
         list($model, $hasWakeup) = self::internalModelsGetModel(get_called_class());
