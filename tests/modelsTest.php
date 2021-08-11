@@ -534,7 +534,7 @@ class ModelsTest extends BearFramework\AddonTests\PHPUnitTestCase
         $this->assertEquals(array_merge($modelsArray, [['id' => 'id3', 'name' => 'Matt']]), $newRepository->toArray());
         $newRepository->delete('id3');
         $this->assertEquals($modelsArray, $newRepository->toArray());
-        $newRepository->deleteAll('id3');
+        $newRepository->deleteAll();
         $this->assertEquals([], $newRepository->toArray());
     }
 
