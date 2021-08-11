@@ -66,15 +66,6 @@ class MemoryDataDriver implements \BearFramework\Models\IDataDriver
 
     /**
      * 
-     * @return void
-     */
-    public function deleteAll(): void
-    {
-        $this->data = [];
-    }
-
-    /**
-     * 
      * @return array
      */
     public function getAll(): array

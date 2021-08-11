@@ -107,20 +107,6 @@ class AppDataDriver implements \BearFramework\Models\IDataDriver
 
     /**
      * 
-     * @return void
-     */
-    public function deleteAll(): void
-    {
-        $list = $this->app->data->getList()
-            ->filterBy('key', $this->dataKeyPrefix, 'startWith')
-            ->sliceProperties(['key']);
-        foreach ($list as $item) {
-            $this->app->data->delete($item['key']);
-        }
-    }
-
-    /**
-     * 
      * @return array
      */
     public function getAll(): array

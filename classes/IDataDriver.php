@@ -48,12 +48,6 @@ interface IDataDriver
 
     /**
      * 
-     * @return void
-     */
-    public function deleteAll(): void;
-
-    /**
-     * 
      * @return array
      */
     public function getAll(): array;

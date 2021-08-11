@@ -53,6 +53,12 @@ trait ModelsRepositoryModifyTrait
      */
     public function deleteAll(): void
     {
-        $this->internalModelsRepositoryGetDataDriver()->deleteAll();
+        $modelIDProperty = $this->internalModelsRepositoryGetModelIDProperty();
+        $modelsJSON = $this->internalModelsRepositoryGetDataDriver()->getAll();
+        $class = $this->internalModelsRepositoryGetModelClassName();
+        foreach ($modelsJSON as $modelJSON) {
+            $model = call_user_func([$class, 'fromJSON'], $modelJSON);
+            $this->delete($model->$modelIDProperty);
+        }
     }
 }
