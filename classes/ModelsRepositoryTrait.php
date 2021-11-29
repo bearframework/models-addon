@@ -113,7 +113,7 @@ trait ModelsRepositoryTrait
     {
         if ($this->internalModelsRepositoryModel !== null) {
             $idProperty = $this->internalModelsRepositoryModel[2];
-            if (strlen($idProperty) === 0) {
+            if ($idProperty === null || strlen($idProperty) === 0) {
                 throw new \Exception('No idProperty specified form model ' . $this->internalModelsRepositoryModel[1] . '!');
             }
             return $idProperty;
