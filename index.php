@@ -13,4 +13,4 @@ $app = App::get();
 $context = $app->contexts->get(__DIR__);
 
 $context->classes
-        ->add('BearFramework\Models\*', 'classes/*.php');
+    ->add('BearFramework\Models\*', 'classes/*.php');
