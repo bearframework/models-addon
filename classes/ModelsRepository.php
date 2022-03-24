@@ -24,6 +24,7 @@ class ModelsRepository
     use \BearFramework\Models\ModelsRepositoryMakeTrait;
     use \BearFramework\Models\ModelsRepositoryModifyTrait;
     use \BearFramework\Models\ModelsRepositoryRequestTrait;
+    //use \BearFramework\Models\ModelsRepositoryCreateTrait; // Enable in next major version. May conflict with existing add() methods.
     use \BearFramework\Models\ModelsRepositoryToArrayTrait;
     use \BearFramework\Models\ModelsRepositoryToJSONTrait;
 }

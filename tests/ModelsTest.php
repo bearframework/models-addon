@@ -27,7 +27,6 @@ class ModelsTest extends BearFramework\AddonTests\PHPUnitTestCase
             $model = $repository->make();
             $model->id = '1';
             $model->name = 'John';
-            //$repository->add($model);
             $repository->set($model);
             $modelID = $model->id;
 
@@ -42,13 +41,11 @@ class ModelsTest extends BearFramework\AddonTests\PHPUnitTestCase
             $model = $repository->make();
             $model->id = '2';
             $model->name = 'Mark';
-            //$repository->add($model);
             $repository->set($model);
 
             $model = $repository->make();
             $model->id = '3';
             $model->name = 'Matt';
-            //$repository->add($model);
             $repository->set($model);
 
             $this->assertTrue($repository->getList()->count() === 2, $assertMessage);
@@ -209,7 +206,6 @@ class ModelsTest extends BearFramework\AddonTests\PHPUnitTestCase
         $model->id = '1';
         $model->name = 'John';
         $this->expectException(\Exception::class);
-        //$repository->add($model);
         $repository->set($model);
     }
 
@@ -271,23 +267,51 @@ class ModelsTest extends BearFramework\AddonTests\PHPUnitTestCase
     /**
      * 
      */
-    // public function testNotEmptyModelID()
-    // {
-    //     $repository = new class extends \BearFramework\Models\ModelsRepository
-    //     {
+    public function testCreateNotEmptyModelID()
+    {
+        $repository = new SampleRepository3('memory');
+        $model = new SampleModel1();
+        $model->id = 'test';
+        $model->name = 'John';
+        $this->expectException(\InvalidArgumentException::class);
+        $repository->add($model);
+    }
 
-    //         public function __construct()
-    //         {
-    //             $this->setModel(SampleModel1::class, 'id');
-    //             $this->useMemoryDataDriver();
-    //         }
-    //     };
-    //     $model = new SampleModel1();
-    //     $model->id = 'test';
-    //     $model->name = 'John';
-    //     $this->expectException(\InvalidArgumentException::class);
-    //     $repository->add($model);
-    // }
+    /**
+     * 
+     */
+    public function testCreate()
+    {
+        $repository = new SampleRepository3('memory');
+        $model1 = new SampleModel1();
+        $model1->name = 'John';
+        $model1ID = $repository->add($model1);
+        $this->assertTrue(strlen($model1ID) === 15); // default generator length
+        $this->assertTrue($repository->exists($model1ID));
+
+        $model2ID = 'id1';
+        $this->assertFalse($repository->exists($model2ID));
+        $model2 = new SampleModel1();
+        $model2->id = $model2ID;
+        $model2->name = 'John';
+        $repository->set($model2);
+
+        $this->assertTrue($repository->exists($model1ID));
+        $this->assertTrue($repository->exists($model2ID));
+    }
+
+    /**
+     * 
+     */
+    public function testCreateWithIDGenetaror()
+    {
+        $repository = new SampleRepository4('memory');
+        $model1 = new SampleModel1();
+        $model1->name = 'John';
+        $model1ID = $repository->add($model1);
+        $this->assertTrue(strpos($model1ID, 'custom-generator-') === 0);
+        $this->assertTrue($repository->exists($model1ID));
+    }
 
     /**
      * 

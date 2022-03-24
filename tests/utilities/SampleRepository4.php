@@ -7,8 +7,10 @@
  * Free to use under the MIT license.
  */
 
-class SampleRepository1 extends \BearFramework\Models\ModelsRepository
+class SampleRepository4 extends \BearFramework\Models\ModelsRepository
 {
+
+    use \BearFramework\Models\ModelsRepositoryCreateTrait;
 
     public function __construct(string $dataDriver = 'memory')
     {
@@ -16,8 +18,10 @@ class SampleRepository1 extends \BearFramework\Models\ModelsRepository
         if ($dataDriver === 'memory') {
             $this->useMemoryDataDriver();
         } elseif ($dataDriver === 'data') {
-            $this->useAppDataDriver('prefix1/');
+            $this->useAppDataDriver('prefix4/');
         }
+        $this->setIDGenerator(function () {
+            return 'custom-generator-' . $this->generateID(10);
+        });
     }
-
 }
