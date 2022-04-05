@@ -303,7 +303,7 @@ class ModelsTest extends BearFramework\AddonTests\PHPUnitTestCase
     /**
      * 
      */
-    public function testCreateWithIDGenetaror()
+    public function testCreateWithIDGenerator()
     {
         $repository = new SampleRepository4('memory');
         $model1 = new SampleModel1();
