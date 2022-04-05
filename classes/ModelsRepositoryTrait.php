@@ -227,7 +227,7 @@ trait ModelsRepositoryTrait
         try {
             $id = null;
             for ($i = 0; $i < 1000; $i++) {
-                $generatedID = call_user_func($idGenerator);
+                $generatedID = call_user_func($idGenerator, $model);
                 if (!$this->internalModelsRepositoryGetDataDriver()->exists($generatedID)) {
                     $id = $generatedID;
                     break;
