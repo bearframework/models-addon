@@ -16,11 +16,13 @@ trait ModelsRepositoryToJSONTrait
 {
 
     /**
+     * Returns the repository converted as JSON.
      * 
-     * @return string
+     * @param array $options Available options: ignoreReadonlyProperties, properties=>[]
+     * @return string The repository converted as JSON.
      */
-    public function toJSON(): string
+    public function toJSON(array $options = []): string
     {
-        return $this->internalModelsRepositoryGetList()->toJSON();
+        return $this->internalModelsRepositoryGetList()->toJSON($options);
     }
 }

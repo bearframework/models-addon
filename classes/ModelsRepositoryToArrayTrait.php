@@ -16,11 +16,13 @@ trait ModelsRepositoryToArrayTrait
 {
 
     /**
+     * Returns the repository converted as array.
      * 
-     * @return array
+     * @param array $options Available options: ignoreReadonlyProperties, properties=>[]
+     * @return array The repository converted as array.
      */
-    public function toArray(): array
+    public function toArray(array $options = []): array
     {
-        return $this->internalModelsRepositoryGetList()->toArray();
+        return $this->internalModelsRepositoryGetList()->toArray($options);
     }
 }
