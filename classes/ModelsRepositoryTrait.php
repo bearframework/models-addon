@@ -237,7 +237,7 @@ trait ModelsRepositoryTrait
                 throw new \Error('Cannot generate model id!');
             }
             $model->$modelIDProperty = $id;
-            $modelData = $model->toJSON(); // toJSON is used because toArray does not encode the binary data.
+            $modelData = $model->toJSON(['ignoreReadonlyProperties' => true]); // toJSON is used because toArray does not encode the binary data.
             if (method_exists($model, '__modelSleep')) {
                 $modelData = json_encode($model->__modelSleep(json_decode($modelData, true)));
             }
