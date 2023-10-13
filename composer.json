@@ -19,10 +19,10 @@
         "php": "7.1.*|7.2.*|7.3.*|7.4.*|8.0.*|8.1.*",
         "bearframework/bearframework": "1.*",
         "ivopetkov/data-object": "^1.2.0"
+        "ivopetkov/locks-bearframework-addon": "1.*"
     },
     "require-dev": {
         "bearframework/addon-tests": "1.*",
-        "ivopetkov/locks-bearframework-addon": "1.*",
         "ivopetkov/docs-generator": "0.2.*"
     },
     "autoload": {
