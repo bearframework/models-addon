@@ -16,14 +16,14 @@
         }
     ],
     "require": {
-        "php": "7.1.*|7.2.*|7.3.*|7.4.*|8.0.*|8.1.*",
+        "php": "7.1.*|7.2.*|7.3.*|7.4.*|8.0.*|8.1.*|8.2.*|8.3.*",
         "bearframework/bearframework": "1.*",
         "ivopetkov/data-object": "^1.2.0",
         "ivopetkov/locks-bearframework-addon": "1.*"
     },
     "require-dev": {
         "bearframework/addon-tests": "1.*",
-        "ivopetkov/docs-generator": "0.2.*"
+        "ivopetkov/docs-generator": "1.*"
     },
     "autoload": {
         "files": [
