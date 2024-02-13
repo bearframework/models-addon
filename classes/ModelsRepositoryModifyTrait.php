@@ -23,6 +23,15 @@ trait ModelsRepositoryModifyTrait
      */
     public function set($model): void
     {
+        if (isset($this->internalModelsRepositorySources)) {
+            $modelIDProperty = $this->internalModelsRepositoryGetModelIDProperty();
+            $sourcesModelsList = $this->internalModelsRepositoryGetSourcesModelsList();
+            foreach ($sourcesModelsList as $sourcesModel) {
+                if (isset($sourcesModel->$modelIDProperty) && isset($model->$modelIDProperty) && $sourcesModel->$modelIDProperty === $model->$modelIDProperty) {
+                    throw new \Exception('Cannot set a model (' . $modelIDProperty . '=' . $model->$modelIDProperty . ') defined in addSource()');
+                }
+            }
+        }
         $this->internalModelsRepositorySet($model);
     }
 
@@ -33,6 +42,15 @@ trait ModelsRepositoryModifyTrait
      */
     public function delete(string $id): void
     {
+        if (isset($this->internalModelsRepositorySources)) {
+            $modelIDProperty = $this->internalModelsRepositoryGetModelIDProperty();
+            $sourcesModelsList = $this->internalModelsRepositoryGetSourcesModelsList();
+            foreach ($sourcesModelsList as $sourcesModel) {
+                if (isset($sourcesModel->$modelIDProperty) && $sourcesModel->$modelIDProperty === $id) {
+                    throw new \Exception('Cannot delete a model (' . $modelIDProperty . '=' . $id . ') defined in addSource()');
+                }
+            }
+        }
         $this->internalModelsRepositoryGetDataDriver()->delete($id);
     }
 

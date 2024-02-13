@@ -598,4 +598,127 @@ class ModelsTest extends BearFramework\AddonTests\PHPUnitTestCase
         $this->assertEquals(false, $newRepository->exists('id3'));
         $this->assertEquals($modelsArray, $newRepository->getList()->toArray());
     }
+
+    /**
+     * 
+     */
+    public function testSources()
+    {
+        $modelsArray = [];
+        $model = new SampleModel1();
+        $model->id = 'id1';
+        $model->name = 'John';
+        $modelsArray[] = $model->toArray();
+        $model = new SampleModel1();
+        $model->id = 'id2';
+        $model->name = 'Mark';
+        $modelsArray[] = $model->toArray();
+
+        $repository = new class
+        {
+
+            use \BearFramework\Models\ModelsRepositoryTrait;
+            use \BearFramework\Models\ModelsRepositoryFromArrayTrait;
+            use \BearFramework\Models\ModelsRepositoryToArrayTrait;
+            use \BearFramework\Models\ModelsRepositoryModifyTrait;
+            use \BearFramework\Models\ModelsRepositoryRequestTrait;
+            use \BearFramework\Models\ModelsRepositorySourcesTrait;
+
+            function __construct()
+            {
+                $this->setModel(SampleModel1::class, 'id');
+                $this->useMemoryDataDriver();
+            }
+        };
+
+        $newRepository = $repository::fromArray($modelsArray);
+        $newRepository->addSource(function () {
+            return [];
+        });
+        $newRepository->addSource(function () {
+            $result = [];
+
+            $model = new SampleModel1();
+            $model->id = 'id3';
+            $model->name = 'Anna';
+            $result[] = $model;
+
+            $model = new SampleModel1();
+            $model->id = 'id4';
+            $model->name = 'Jane';
+            $result[] = $model;
+
+            return $result;
+        });
+        $newRepository->addSource(function () {
+            $result = [];
+
+            $model = new SampleModel1();
+            $model->id = 'id5';
+            $model->name = 'Tina';
+            $result[] = $model;
+
+            return $result;
+        });
+
+        $this->assertEquals(true, $newRepository->exists('id1'));
+        $this->assertEquals('John', $newRepository->get('id1')->name);
+        $this->assertEquals(true, $newRepository->exists('id3'));
+        $this->assertEquals('Anna', $newRepository->get('id3')->name);
+        $this->assertEquals(5, $newRepository->getList()->count());
+        $this->assertEquals(1, $newRepository->getList()->filterBy('name', 'John')->count());
+        $this->assertEquals(1, $newRepository->getList()->filterBy('name', 'Tina')->count());
+        $this->assertEquals(array(
+            0 =>
+            array(
+                'id' => 'id1',
+                'name' => 'John',
+            ),
+            1 =>
+            array(
+                'id' => 'id2',
+                'name' => 'Mark',
+            ),
+            2 =>
+            array(
+                'id' => 'id3',
+                'name' => 'Anna',
+            ),
+            3 =>
+            array(
+                'id' => 'id4',
+                'name' => 'Jane',
+            ),
+            4 =>
+            array(
+                'id' => 'id5',
+                'name' => 'Tina',
+            ),
+        ), $newRepository->getList()->toArray());
+
+        $model = new SampleModel1();
+        $model->id = 'id1';
+        $model->name = 'John2';
+        $newRepository->set($model);
+        $this->assertEquals('John2', $newRepository->get('id1')->name);
+
+        $errorMessage = null;
+        try {
+            $model = new SampleModel1();
+            $model->id = 'id3';
+            $model->name = 'Anna2';
+            $newRepository->set($model);
+        } catch (\Exception $e) {
+            $errorMessage = $e->getMessage();
+        }
+        $this->assertEquals($errorMessage, "Cannot set a model (id=id3) defined in addSource()");
+
+        $errorMessage = null;
+        try {
+            $newRepository->delete('id4');
+        } catch (\Exception $e) {
+            $errorMessage = $e->getMessage();
+        }
+        $this->assertEquals($errorMessage, "Cannot delete a model (id=id4) defined in addSource()");
+    }
 }

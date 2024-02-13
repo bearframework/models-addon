@@ -20,14 +20,14 @@ trait ModelsRepositoryTrait
     /**
      *
      * @internal
-     * @var ?\BearFramework\Models\IDataDriver 
+     * @var \BearFramework\Models\IDataDriver|null
      */
     private $internalModelsRepositoryDataDriver = null;
 
     /**
      *
      * @internal
-     * @var ?array 
+     * @var array|null
      */
     private $internalModelsRepositoryModel = null;
 
@@ -266,6 +266,12 @@ trait ModelsRepositoryTrait
             $result = [];
             foreach ($modelsJSON as $modelJSON) {
                 $result[] = call_user_func([$class, 'fromJSON'], $modelJSON);
+            }
+            if (isset($this->internalModelsRepositorySources)) {
+                $sourcesModelsList = $this->internalModelsRepositoryGetSourcesModelsList();
+                foreach ($sourcesModelsList as $sourcesModel) {
+                    $result[] = $sourcesModel;
+                }
             }
             return $result;
         });

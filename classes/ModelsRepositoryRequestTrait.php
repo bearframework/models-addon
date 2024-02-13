@@ -22,6 +22,15 @@ trait ModelsRepositoryRequestTrait
      */
     public function get(string $id)
     {
+        if (isset($this->internalModelsRepositorySources)) {
+            $modelIDProperty = $this->internalModelsRepositoryGetModelIDProperty();
+            $sourcesModelsList = $this->internalModelsRepositoryGetSourcesModelsList();
+            foreach ($sourcesModelsList as $sourcesModel) {
+                if (isset($sourcesModel->$modelIDProperty) && $sourcesModel->$modelIDProperty === $id) {
+                    return $sourcesModel;
+                }
+            }
+        }
         $json = $this->internalModelsRepositoryGetDataDriver()->get($id);
         if ($json === null) {
             return null;
@@ -36,6 +45,15 @@ trait ModelsRepositoryRequestTrait
      */
     public function exists(string $id): bool
     {
+        if (isset($this->internalModelsRepositorySources)) {
+            $modelIDProperty = $this->internalModelsRepositoryGetModelIDProperty();
+            $sourcesModelsList = $this->internalModelsRepositoryGetSourcesModelsList();
+            foreach ($sourcesModelsList as $sourcesModel) {
+                if (isset($sourcesModel->$modelIDProperty) && $sourcesModel->$modelIDProperty === $id) {
+                    return true;
+                }
+            }
+        }
         return $this->internalModelsRepositoryGetDataDriver()->exists($id);
     }
 

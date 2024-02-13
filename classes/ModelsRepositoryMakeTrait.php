@@ -18,7 +18,7 @@ trait ModelsRepositoryMakeTrait
     /**
      *
      * @internal
-     * @var ?object 
+     * @var object|null
      */
     private $internalModelsRepositoryModelObjectCache = null;
 
