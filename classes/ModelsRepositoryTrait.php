@@ -38,7 +38,7 @@ trait ModelsRepositoryTrait
      * @return void
      * @throws \Exception
      */
-    protected function setModel(string $class, string $idProperty = null): void
+    protected function setModel(string $class, ?string $idProperty = null): void
     {
         if ($this->internalModelsRepositoryModel !== null) {
             throw new \Exception('A model is already specified for this repository!');
@@ -67,7 +67,7 @@ trait ModelsRepositoryTrait
      * @return void
      * @throws \Exception
      */
-    protected function useAppDataDriver(string $dataKeyPrefix, callable $dataKeyCallback = null): void
+    protected function useAppDataDriver(string $dataKeyPrefix, ?callable $dataKeyCallback = null): void
     {
         $this->setDataDriver(new \BearFramework\Models\AppDataDriver($dataKeyPrefix, $dataKeyCallback));
     }

@@ -52,7 +52,7 @@ trait ModelsRepositorySourcesTrait
         if ($this->internalModelsRepositorySourcesDataCache === null) {
             $this->internalModelsRepositorySourcesDataCache = [];
         }
-        $cacheKey = join('-', array_keys($this->internalModelsRepositorySources));
+        $cacheKey = implode('-', array_keys($this->internalModelsRepositorySources));
         if (!isset($this->internalModelsRepositorySourcesDataCache[$cacheKey])) {
             $result = [];
             foreach ($this->internalModelsRepositorySources as $callback) {

@@ -41,7 +41,7 @@ class AppDataDriver implements \BearFramework\Models\IDataDriver
      * @param callable|null $dataKeyCallback
      * @throws \InvalidArgumentException
      */
-    public function __construct(string $dataKeyPrefix, callable $dataKeyCallback = null)
+    public function __construct(string $dataKeyPrefix, ?callable $dataKeyCallback = null)
     {
         $this->app = App::get();
         if (strlen($dataKeyPrefix) === 0 || !$this->app->data->validate($dataKeyPrefix . 'example')) {
